@@ -1,5 +1,27 @@
 {
+  "name": "paradar",
+  "description": "Paradar allows you to view and track vital goods and personnel in times of chaos",
   "private": true,
+  "contributors": [
+    {
+      "name": "Bo Robbrecht",
+      "email": "dev@borobbrecht.be",
+      "url": "https://www.linkedin.com/in/borobbrecht/"
+    },
+    {
+      "name": "Ben Stoffels",
+      "url": "https://www.linkedin.com/in/ben-stoffels-80726423b/"
+    },
+    {
+      "name": "Joshua Moelans",
+      "url": "https://www.linkedin.com/in/joshuamoelans/"
+    },
+    {
+      "name": "Florian Mazzeo",
+      "url": "https://www.linkedin.com/in/florian-mazzeo-b4a817201/"
+    }
+  ],
+  "license": "MIT",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
