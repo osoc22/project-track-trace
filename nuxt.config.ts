@@ -11,23 +11,21 @@ export default defineNuxtConfig({
 		"@kevinmarrec/nuxt-pwa"
 	],
 	pwa: {
+		icon: {
+			source: "./assets/icon.png"
+		},
+		meta: {
+			name: "Paradar",
+			author: "Paradar Team",
+			description: "Paradar allows you to view and track vital goods and personnel in times of chaos",
+			theme_color: "#11A9A1"
+		},
+		manifest: {
+			name: "Paradar Tracking",
+			short_name: "Paradar"
+		},
 		workbox: {
 			enabled: true
-		},
-		icon: {
-			source:"./assets/icon.png"
 		}
-	},
-	meta: {
-		name: "Paradar",
-		author: "Paradar Team",
-		description: "Paradar allows you to view and track vital goods and personnel in times of chaos",
-		theme_color: "#11A9A1",
-		nativeUI: true
-	},
-	manifest: {
-		name: "Paradar Tracking",
-		short_name: "Paradar",
-		useWebmanifestExtension: "true"
 	}
 });
