@@ -1,45 +1,41 @@
 {
-  "name": "paradar",
-  "description": "Paradar allows you to view and track vital goods and personnel in times of chaos",
+  "name": "project-nccn",
+  "version": "1.0.0",
   "private": true,
-  "contributors": [
-    {
-      "name": "Bo Robbrecht",
-      "email": "dev@borobbrecht.be",
-      "url": "https://www.linkedin.com/in/borobbrecht/"
-    },
-    {
-      "name": "Ben Stoffels",
-      "url": "https://www.linkedin.com/in/ben-stoffels-80726423b/"
-    },
-    {
-      "name": "Joshua Moelans",
-      "url": "https://www.linkedin.com/in/joshuamoelans/"
-    },
-    {
-      "name": "Florian Mazzeo",
-      "url": "https://www.linkedin.com/in/florian-mazzeo-b4a817201/"
-    }
-  ],
-  "license": "MIT",
   "scripts": {
+    "dev": "nuxt",
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "start": "nuxt start",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.30.5",
-    "@typescript-eslint/parser": "^5.30.5",
-    "eslint": "^8.19.0",
-    "eslint-plugin-vue": "^9.2.0",
-    "nuxt": "3.0.0-rc.4",
-    "typescript": "^4.7.4"
+    "lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
+    "lint:style": "stylelint \"**/*.{css,scss,sass,html,vue}\" --ignore-path .gitignore",
+    "lint": "yarn lint:js && yarn lint:style",
+    "lintfix": "yarn lint:js --fix && yarn lint:style --fix"
   },
   "dependencies": {
-    "@kevinmarrec/nuxt-pwa": "^0.3.1",
-    "sass": "^1.53.0",
-    "sass-loader": "^13.0.2",
-    "vue3-openlayers": "^0.1.68"
+    "@nuxtjs/pwa": "^3.3.5",
+    "bootstrap": "^4.6.1",
+    "bootstrap-vue": "^2.21.2",
+    "core-js": "^3.19.3",
+    "nuxt": "^2.15.8",
+    "vue": "^2.6.14",
+    "vue-server-renderer": "^2.6.14",
+    "vue-template-compiler": "^2.6.14",
+    "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.16.3",
+    "@nuxt/types": "^2.15.8",
+    "@nuxt/typescript-build": "^2.1.0",
+    "@nuxtjs/eslint-config-typescript": "^8.0.0",
+    "@nuxtjs/eslint-module": "^3.0.2",
+    "@nuxtjs/stylelint-module": "^4.1.0",
+    "eslint": "^8.4.1",
+    "eslint-plugin-nuxt": "^3.1.0",
+    "eslint-plugin-vue": "^8.2.0",
+    "postcss-html": "^1.3.0",
+    "stylelint": "^14.1.0",
+    "stylelint-config-recommended-vue": "^1.1.0",
+    "stylelint-config-standard": "^24.0.0"
   }
 }
