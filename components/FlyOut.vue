@@ -1,20 +1,34 @@
 <script>
   export default{
     methods:{
-        animateButton(){
-          const btn = document.getElementById("flyout-toggle");
-          btn.classList.add("open");
-        }
+        updateMenu(){
+          const closedIcon = document.getElementById("menu-closed");
+          const openedIcon = document.getElementById("menu-opened");
+          if(closedIcon.classList.contains("shown")){
+            closedIcon.classList.remove("shown");
+            closedIcon.classList.add("hidden");
+            openedIcon.classList.remove("hidden");
+            openedIcon.classList.add("shown");
+          }else{
+            openedIcon.classList.remove("shown");
+            openedIcon.classList.add("hidden");
+            closedIcon.classList.remove("hidden");
+            closedIcon.classList.add("shown");
+          }
     }
   }
+        }
 </script>
 
 <template>
   <div id="flyout-wrapper">
-    <b-button v-b-toggle.flyout id="flyout-toggle" @click="animateButton">
-      <img src="../static/svg/burger-menu.svg" width="32" height="32">
+    <b-button v-b-toggle.flyout id="flyout-toggle" class="shadow-none" @click="updateMenu" squared>
+      <img id="menu-closed" class="shown" src="../static/svg/burger-menu.svg" width="32" height="32">
+      <img id="menu-opened" class="hidden" src="../static/svg/close-menu.svg" width="32" height="32" >
     </b-button>
-    <b-sidebar id="flyout" title="Paradar" bg-variant="dark" text-variant="light" shadow>
+    <b-sidebar id="flyout" bg-variant="dark" text-variant="light" no-header shadow>
+      <hr>
+      <h1 class="px-3 py-2"> Paradar </h1>
       <div class="px-3 py-2">
         <p>
           Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
@@ -27,29 +41,29 @@
 </template>
 
 <style>
-  #flyout-wrapper {
-    display: flex;
-    flex-direction: row;
+  .hidden {
+    display: none;
+  }
+
+  .shown {
+    display: block;
   }
 
   #flyout {
     height: 80%;
     width: 200px;
     margin-top: 5%;
-    background-color: dimgrey;
     border-radius: 0 20px 20px 0;
-    order: 0;
+    position: fixed;
+    z-index: -1;
   }
 
   #flyout-toggle {
-    margin-top: 8%;
-    border-radius: 0;
-    order: 1;
+    margin-top: 5%;
     transition: 0.5s;
+    position: fixed;
+    z-index: 99999;
+    background-color: #343a40;
+    border-style: none;
   }
-
-  #flyout-toggle.open {
-    margin-left: 200px;
-  }
-
 </style>
