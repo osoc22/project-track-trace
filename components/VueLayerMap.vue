@@ -1,12 +1,12 @@
 <template>
-  <client-only>
-    <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true" style="height: 400px;">
-      <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation" />
-      <vl-layer-tile id="osm">
-        <vl-source-osm />
-      </vl-layer-tile>
-    </vl-map>
-  </client-only>
+    <client-only>
+      <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
+        <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation" />
+        <vl-layer-tile id="osm">
+          <vl-source-osm />
+        </vl-layer-tile>
+      </vl-map>
+    </client-only>
 </template>
 
 <script lang="ts">
