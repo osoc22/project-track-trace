@@ -1,5 +1,5 @@
 <template>
-  <vue-layer-map>
+  <vue-layer-map :initial-zoom="6" :initial-center="[4.356998572,50.855996576]">
     <template #features>
       <vue-layer-marker :coordinates="[4.356998572,50.855996576]" />
     </template>
