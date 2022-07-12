@@ -19,7 +19,6 @@ export default Vue.extend({
     props: {
         coordinates: {
             type: Array,
-            default: () => [50.855996576, 4.356998572],
             required: true
         },
         src: {
