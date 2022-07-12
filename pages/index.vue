@@ -1,7 +1,7 @@
 <template>
   <vue-layer-map>
     <template #features>
-      <vue-layer-marker :coordinates="[38.726634,9.003391]" />
+      <vue-layer-marker :coordinates="[4.356998572,50.855996576]" />
     </template>
   </vue-layer-map>
 </template>

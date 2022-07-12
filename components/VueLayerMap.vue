@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
+    <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true" data-projection="EPSG:4326">
       <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation" />
       <slot name="features" />
       <slot name="overlays" />
