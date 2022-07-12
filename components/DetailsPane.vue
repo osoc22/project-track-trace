@@ -1,5 +1,4 @@
 <script>
-import SearchTrackers from './SearchTrackers.vue';
 export default {
     props: {
         InitOpen: {
@@ -12,37 +11,34 @@ export default {
             open: this.InitOpen
         };
     },
-    components: { SearchTrackers }
 }
 </script>
 
 <template>
-  <div id="flyout-wrapper">
-    <b-button v-b-toggle.flyout id="flyout-toggle" class="shadow-none" squared @click="open= ! open">
-      <img id="menu-closed" v-if="!open" src="/svg/burger-menu.svg" width="32" height="32">
-      <img id="menu-opened" v-else src="/svg/close-menu.svg" width="32" height="32" >
+  <div id="details-wrapper">
+    <b-button v-b-toggle.details id="details-toggle" class="shadow-none" squared @click="open= ! open">
+    X
     </b-button>
-    <b-sidebar id="flyout" bg-variant="dark" text-variant="light" no-header shadow>
+    <b-sidebar id="details" bg-variant="dark" text-variant="light" no-header right shadow>
       <!-- because of no-header, we need an additional horizontal break-->
       <hr>
       <hr>
-      <SearchTrackers />
     </b-sidebar>
   </div>
 </template>
 
 <style>
-  #flyout {
+  #details {
     height: 80%;
     width: 15%;
     margin-top: 5%;
-    border-radius: 0 20px 20px 0;
+    border-radius: 20px 0 0 20px;
     position: fixed;
     z-index: -1;
   }
 
-  #flyout-toggle {
-    margin-top: 5%;
+  #details-toggle {
+    margin-top: 0;
     position: fixed;
 
     /* needed because of Bootstrap positioning  */
