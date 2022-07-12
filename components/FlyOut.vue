@@ -22,7 +22,7 @@ export default {
       <img id="menu-closed" v-if="!open" src="/svg/burger-menu.svg" width="32" height="32">
       <img id="menu-opened" v-else src="/svg/close-menu.svg" width="32" height="32" >
     </b-button>
-    <b-sidebar id="flyout" bg-variant="dark" text-variant="light" no-header shadow>
+    <b-sidebar id="flyout" bg-variant="dark" no-header shadow>
       <!-- because of no-header, we need an additional horizontal break-->
       <hr>
       <hr>

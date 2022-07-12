@@ -12,6 +12,11 @@ export default Vue.extend({
                     let name = `Alpha ${String(i)}`;
                     li.classList.add("list-group-item");
                     li.innerText = name;
+                    let docRoot = this.$root;
+                    li.addEventListener('click', function(event){
+                        const clickElement = event.target as HTMLElement;
+                        docRoot.$emit("details",clickElement.innerText);
+                    })
                     trackerList.appendChild(li);
                 }
             }
@@ -20,7 +25,7 @@ export default Vue.extend({
 })
 </script>
 <template>
-      <div class="container">
+      <div class="container" text-variant="light">
         <!-- search box row-->
         <div class="row align-items-center form-group">
           <div class="col-sm-2"></div>
@@ -46,7 +51,7 @@ export default Vue.extend({
       </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
   hr {
     clear: both;
     visibility: hidden;
@@ -58,6 +63,10 @@ export default Vue.extend({
 
   li:nth-child(odd) {
     background: #e0e0e0;
+  }
+
+  li:hover {
+    cursor: pointer;
   }
 
   .form-group {

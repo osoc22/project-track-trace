@@ -11,18 +11,29 @@ export default {
             open: this.InitOpen
         };
     },
+    mounted(){
+        this.$root.$on("details", (msg) => {
+            if(! this.open){
+            document.getElementById("details-toggle").click();
+            }
+            document.getElementById("details-title").innerText = msg;
+            document.getElementById("details-content").innerText = `All information about ${msg} will show up here.`;
+        })
+        // Todo - fix bug where, upon closing the details sidebar, the open variable is not reset (easy fix with jquery, but trying to avoid it)
+        //$("#details").on('hidden.bs.collapse', function(){
+        //    this.open = !this.open;
+        //})
+    }
 }
 </script>
 
 <template>
   <div id="details-wrapper">
-    <b-button v-b-toggle.details id="details-toggle" class="shadow-none" squared @click="open= ! open">
-    X
+    <b-button v-b-toggle.details id="details-toggle" style="display: none;" @click="open= ! open">
     </b-button>
-    <b-sidebar id="details" bg-variant="dark" text-variant="light" no-header right shadow>
-      <!-- because of no-header, we need an additional horizontal break-->
-      <hr>
-      <hr>
+    <b-sidebar id="details" bg-variant="dark" text-variant="light" right shadow>
+        <h2 id="details-title" class="ml-3"></h2>
+        <p id="details-content" class="ml-3"></p>
     </b-sidebar>
   </div>
 </template>
