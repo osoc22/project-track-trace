@@ -1,7 +1,7 @@
 <template>
-  <vue-layer-map :initial-zoom="6" :initial-center="[4.356998572,50.855996576]">
+  <vue-layer-map :initial-zoom="6" :initial-center="coordinates">
     <template #features>
-      <vue-layer-marker :coordinates="[baseCoordinates[0], baseCoordinates[1]]" />
+      <vue-layer-marker :coordinates="coordinates" />
     </template>
   </vue-layer-map>
 </template>
@@ -15,12 +15,12 @@
         name: "IndexPage",
         data () {
             return {
-                baseCoordinates: [0, 0]
+                coordinates: [0, 0]
             };
         },
         components: { VueLayerMarker },
         mounted () {
-            connectToClient(this.baseCoordinates);
+            connectToClient(this.coordinates);
         }
     });
 
@@ -73,8 +73,10 @@
         const splitTopic: string[] = topic.split("/");
         const informationName: string = splitTopic[splitTopic.length - 1];
 
+        console.log(ref);
         if (informationName === "position.longitude") {
-            ref[0] = Number(msg);
+            // ref[0] = Number(msg);
+            this.coordinates[0] = Number(msg);
         } else if (informationName === "position.latitude") {
             ref[1] = Number(msg);
         }
