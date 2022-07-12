@@ -1,12 +1,18 @@
 <template>
-  <vue-layer-map />
+  <vue-layer-map :initial-zoom="6" :initial-center="[4.356998572,50.855996576]">
+    <template #features>
+      <vue-layer-marker :coordinates="[4.356998572,50.855996576]" />
+    </template>
+  </vue-layer-map>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import VueLayerMarker from "~/components/VueLayerMarker.vue";
 
 export default Vue.extend({
-  name: "IndexPage"
+  name: "IndexPage",
+  components: { VueLayerMarker }
 });
 </script>
 
