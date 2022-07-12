@@ -1,12 +1,14 @@
 <template>
-    <client-only>
-      <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
-        <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation" />
-        <vl-layer-tile id="osm">
-          <vl-source-osm />
-        </vl-layer-tile>
-      </vl-map>
-    </client-only>
+  <client-only>
+    <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
+      <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation" />
+      <slot name="features" />
+      <slot name="overlays" />
+      <vl-layer-tile id="osm">
+        <vl-source-osm />
+      </vl-layer-tile>
+    </vl-map>
+  </client-only>
 </template>
 
 <script lang="ts">
