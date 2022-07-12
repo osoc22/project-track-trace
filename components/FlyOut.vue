@@ -5,16 +5,24 @@
           const closedIcon = document.getElementById("menu-closed");
           const openedIcon = document.getElementById("menu-opened");
           if(closedIcon.classList.contains("shown")){
-            closedIcon.classList.remove("shown");
-            closedIcon.classList.add("hidden");
-            openedIcon.classList.remove("hidden");
-            openedIcon.classList.add("shown");
+            closedIcon.classList.replace("shown", "hidden");
+            openedIcon.classList.replace("hidden","shown");
           }else{
-            openedIcon.classList.remove("shown");
-            openedIcon.classList.add("hidden");
-            closedIcon.classList.remove("hidden");
-            closedIcon.classList.add("shown");
+            closedIcon.classList.replace("hidden", "shown");
+            openedIcon.classList.replace("shown","hidden");
           }
+    },
+    // temporary function to generate list items -> to be replaced by actual data
+    generateList(){
+      const trackerList = document.getElementById("trackerList");
+      trackerList.innerHTML = "";
+      for(let i=0; i<7; i++){
+        let li = document.createElement("li");
+        let name = `Alpha ${String(i)}`;
+        li.classList.add("list-group-item");
+        li.innerText = name;
+        trackerList.appendChild(li);
+      }
     }
   }
         }
@@ -27,20 +35,60 @@
       <img id="menu-opened" class="hidden" src="../static/svg/close-menu.svg" width="32" height="32" >
     </b-button>
     <b-sidebar id="flyout" bg-variant="dark" text-variant="light" no-header shadow>
+      <!-- because of no-header, we need an additional horizontal break-->
       <hr>
-      <h1 class="px-3 py-2"> Paradar </h1>
-      <div class="px-3 py-2">
-        <p>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-          in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-        </p>
-        <b-img src="../static/icon.png" fluid></b-img>
+      <hr>
+      <!-- search box row-->
+      <div class="container">
+        <!-- search box row-->
+        <div class="row align-items-center form-group">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8">
+            <b-input-group>
+              <b-form-input size="sm" placeholder="search tracker"></b-form-input>
+              <b-input-group-append>
+                <b-button size="sm" variant="outline-success" @click="generateList">🔍</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+        <!-- tracker data row-->
+        <div class="row align-items-center align-text-center">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8">
+            <ul class="list-group" id="trackerList">
+            </ul>
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
       </div>
     </b-sidebar>
   </div>
 </template>
 
 <style>
+  hr {
+    clear: both;
+    visibility: hidden;
+  }
+
+  li:nth-child(even) {
+    background: #fff;
+  }
+
+  li:nth-child(odd) {
+    background: #e0e0e0;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .list-group-item {
+    color: #343a40;
+  }
+
   .hidden {
     display: none;
   }
@@ -51,7 +99,7 @@
 
   #flyout {
     height: 80%;
-    width: 200px;
+    width: 15%;
     margin-top: 5%;
     border-radius: 0 20px 20px 0;
     position: fixed;
@@ -60,10 +108,13 @@
 
   #flyout-toggle {
     margin-top: 5%;
-    transition: 0.5s;
     position: fixed;
+
+    /* needed because of Bootstrap positioning  */
     z-index: 99999;
     background-color: #343a40;
-    border-style: none;
+
+    /* important to overwrite basic bootstrap border  */
+    border-radius: 0 7px 7px 0 !important;
   }
 </style>
