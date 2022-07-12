@@ -17,6 +17,11 @@ $ yarn start
 $ yarn generate
 ```
 
+## `.env`
+|Key|Explanation|Example|
+|---|---|---|
+|FLESPI_KEY|The API key needed to contact the Flespi server|AHVSIB27836|
+
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
 ## TypeScript

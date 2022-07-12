@@ -25,7 +25,7 @@ export default Vue.extend({
     },
     methods: {
         connectToClient () {
-            const token = "cnYrjpRhZhECQVkE6CLiowFuAq7pN2rPed7nsOsfVVFAGN2AfBGuXbMlpKB2AQIC"; // TODO : store securely
+            const token = process.env.FLESPI_KEY || "not found"; // TODO : Handle when the key isn't there
             if (token.length !== 64) {
                 console.log("please check the token");
                 return;
@@ -155,7 +155,7 @@ export default Vue.extend({
  * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
  * But, I can't seem to get to get multiple layout working *just* yet.
  *
- * TODO: Export html & body styling to layout component
+ * TODO : Export html & body styling to layout component
  */
 html,
 body,
