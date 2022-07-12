@@ -31,7 +31,7 @@
                     return;
                 }
                 const client = connect("wss://mqtt.flespi.io", {
-                    clientId: "track-and-trace",
+                    clientId: process.env.FLESPI_CLIENT_ID,
                     // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
                     username: "FlespiToken " + token,
                     protocolVersion: 5,
