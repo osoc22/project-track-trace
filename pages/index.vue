@@ -15,30 +15,33 @@
         name: "IndexPage",
         data () {
             return {
-                baseCoordinates: [4.356998572, 50.855996576]
+                baseCoordinates: [0, 0]
             };
         },
         components: { VueLayerMarker },
         mounted () {
-            example(this.baseCoordinates);
+            connectToClient(this.baseCoordinates);
         }
     });
 
-    function example (reference: Number[]) {
-        const token = "cnYrjpRhZhECQVkE6CLiowFuAq7pN2rPed7nsOsfVVFAGN2AfBGuXbMlpKB2AQIC";
+    // TODO : delete console logs ?
+    function connectToClient (reference: Number[]) {
+        const token = "cnYrjpRhZhECQVkE6CLiowFuAq7pN2rPed7nsOsfVVFAGN2AfBGuXbMlpKB2AQIC"; // TODO : store securely
         if (token.length !== 64) {
             console.log("please check the token");
             return;
         }
         const client = connect("wss://mqtt.flespi.io", {
-            clientId: "flespi-examples-mqtt-client-browser",
+            clientId: "track-and-trace",
             // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
             username: "FlespiToken " + token,
             protocolVersion: 5,
             clean: true
         });
 
+        // TODO : we should be able to see all trackers and not only one
         client.on("connect", () => {
+            // Subscribe to the telemetry topic
             client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err) => {
                 if (err) {
                     console.log("failed to subscribe to topic \"test\":", err);
@@ -50,12 +53,6 @@
 
         client.on("message", (topic, msg) => {
             filter(topic, msg.toString("utf8"), reference);
-            /*
-             * console.log("received message in topic \"" + topic + "\": \"" + msg.toString("utf8") + "\"");
-             *
-             * log('disconnecting...');
-             * client.end();
-             */
         });
 
         client.on("close", () => {
@@ -68,6 +65,10 @@
         });
     }
 
+    /*
+     * Filter the data received to keep only the latitude and longitude attributes
+     * TODO : adapt to real needs
+     */
     function filter (this: any, topic: string, msg: string, ref: Number[]) {
         const splitTopic: string[] = topic.split("/");
         const informationName: string = splitTopic[splitTopic.length - 1];
