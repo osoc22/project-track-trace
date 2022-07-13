@@ -9,6 +9,7 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
+    import { eventBus } from "~/plugins";
 
     export default Vue.extend({
         name: "IndexPage",
@@ -19,6 +20,12 @@
                 latitude: 0,
                 zoom: 6
             };
+        },
+        created () {
+            eventBus.$on("newCoordinates", (data: number[]) => {
+                this.longitude = data[0];
+                this.latitude = data[1];
+            });
         },
         mounted () {
             this.$connectToClient();
