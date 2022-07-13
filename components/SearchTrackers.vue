@@ -1,7 +1,7 @@
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
     methods: {
         performSearch(){
           console.log("performing search");
@@ -10,7 +10,7 @@ export default Vue.extend({
           let targetElement = event.target as HTMLElement;
           this.resetActive(targetElement);
           // emit data through root, to be caught by the DetailsPane component
-          this.$root.$emit("details",targetElement.innerText, details);
+          this.$root?.$emit("details",targetElement.innerText, details);
         },
         resetActive(element : HTMLElement) {
           let add : Boolean = !element.classList.contains('active');
@@ -27,7 +27,7 @@ export default Vue.extend({
         }
     },
     mounted(){
-      this.$root.$on("details-toggled", ()=> {
+      this.$root?.$on("details-toggled", ()=> {
         this.clearActive();
       })
     },

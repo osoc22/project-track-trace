@@ -1,19 +1,21 @@
-<script>
+<script lang="ts">
 import SearchTrackers from './SearchTrackers.vue';
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
     props: {
         InitOpen: {
             type: Boolean,
             default: false
         }
     },
-    data() {
+    data() : Object {
         return {
             open: this.InitOpen
         };
     },
     components: { SearchTrackers }
-}
+})
 </script>
 
 <template>

@@ -1,5 +1,7 @@
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
     props: {
         InitOpen: {
             type: Boolean,
@@ -16,7 +18,7 @@ export default {
           default: ""
         }
     },
-    data() {
+    data() : Object {
         return {
             open: this.InitOpen,
             details: this.InitDetails,
@@ -24,9 +26,9 @@ export default {
         };
     },
     mounted(){
-        this.$root.$on("details", (name, trackerDetails) => {
+        this.$root?.$on("details", (name : string, trackerDetails : Object) => {
           if(!this.open || this.name === name){
-            document.getElementById("details-toggle").click();
+            document.getElementById("details-toggle")?.click();
           }
           this.details = trackerDetails;
           this.name = name;
@@ -35,11 +37,11 @@ export default {
     methods: {
       onSidebarClose(){
         this.open=false;
-        this.$root.$emit('details-toggled');
+        this.$root?.$emit('details-toggled');
         this.name='';
       }
     }
-}
+})
 </script>
 
 <template>
@@ -48,10 +50,10 @@ export default {
     </b-button>
     <b-sidebar id="details" bg-variant="dark" text-variant="light" right shadow @hidden="onSidebarClose">
       <hr class="flyout-top">
-        <h2 id="details-title" v-if="this.name" class="ml-3">
-          {{ this.name }}
+        <h2 id="details-title" :v-if="name" class="ml-3">
+          {{ name }}
         </h2>
-        <h4 v-for="(item, index) in details" :key="index" class="ml-4 mr-1">
+        <h4 v-for="(item, index) in details" :key="index" class="ml-4 mr-4">
           <hr/>
           {{ index }}
           <p class="lead">
