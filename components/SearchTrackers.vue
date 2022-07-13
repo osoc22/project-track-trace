@@ -8,9 +8,28 @@ export default Vue.extend({
         },
         clickListItem(event : MouseEvent, details : Object) {
           let targetElement = event.target as HTMLElement;
+          this.resetActive(targetElement);
           // emit data through root, to be caught by the DetailsPane component
           this.$root.$emit("details",targetElement.innerText, details);
         },
+        resetActive(element : HTMLElement) {
+          let add : Boolean = !element.classList.contains('active');
+          this.clearActive();
+          if(add){
+            element.classList.add('active');
+          }
+        },
+        clearActive(){
+        let currentActive : HTMLCollectionOf<Element> = document.getElementsByClassName("active");
+          for (var i = 0; i < currentActive.length; i++) {
+            currentActive.item(i)?.classList.remove('active');
+          }
+        }
+    },
+    mounted(){
+      this.$root.$on("details-toggled", ()=> {
+        this.clearActive();
+      })
     },
     data(){
       return {
@@ -46,7 +65,7 @@ export default Vue.extend({
           <div class="col-sm-2"></div>
           <div class="col-sm-8">
             <ul class="list-group" id="trackerList">
-              <li class="list-group-item" v-for="(item, index) in trackers" :key="index" @click="clickListItem($event, item)">
+              <li class="list-group-item" v-for="(item, index) in trackers" :key="index" @click="clickListItem($event, item)" :id="index">
                 {{ index }}
               </li>
             </ul>
@@ -57,11 +76,6 @@ export default Vue.extend({
 </template>
 
 <style lang="scss">
-  hr {
-    clear: both;
-    visibility: hidden;
-  }
-
   li:nth-child(even) {
     background: #fff;
   }

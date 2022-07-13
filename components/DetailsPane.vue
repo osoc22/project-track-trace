@@ -25,14 +25,19 @@ export default {
     },
     mounted(){
         this.$root.$on("details", (name, trackerDetails) => {
-          // todo - add check if open & name is the same, we can close the details pane again
-          // need to figure out how to overwrite the open=!open from hiding the details
-          if(!this.open){
+          if(!this.open || this.name === name){
             document.getElementById("details-toggle").click();
           }
           this.details = trackerDetails;
           this.name = name;
         })
+    },
+    methods: {
+      onSidebarClose(){
+        this.open=false;
+        this.$root.$emit('details-toggled');
+        this.name='';
+      }
     }
 }
 </script>
@@ -41,7 +46,8 @@ export default {
   <div id="details-wrapper">
     <b-button v-b-toggle.details id="details-toggle" style="display: none;" @click="open=!open">
     </b-button>
-    <b-sidebar id="details" bg-variant="dark" text-variant="light" right shadow @hidden="open=!open">
+    <b-sidebar id="details" bg-variant="dark" text-variant="light" right shadow @hidden="onSidebarClose">
+      <hr class="flyout-top">
         <h2 id="details-title" v-if="this.name" class="ml-3">
           {{ this.name }}
         </h2>

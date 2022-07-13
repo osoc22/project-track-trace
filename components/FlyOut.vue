@@ -24,8 +24,7 @@ export default {
     </b-button>
     <b-sidebar id="flyout" bg-variant="dark" no-header shadow>
       <!-- because of no-header, we need an additional horizontal break-->
-      <hr>
-      <hr>
+      <hr class="flyout-top">
       <SearchTrackers />
     </b-sidebar>
   </div>
@@ -51,5 +50,11 @@ export default {
 
     /* important to overwrite basic bootstrap border  */
     border-radius: 0 7px 7px 0 !important;
+  }
+
+  .flyout-top {
+    clear: both;
+    visibility: hidden;
+    height: 50px;
   }
 </style>
