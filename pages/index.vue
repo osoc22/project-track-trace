@@ -28,7 +28,7 @@
             });
         },
         mounted () {
-            this.$connectToClient();
+            this.$getPositionData();
         }
     });
 </script>
