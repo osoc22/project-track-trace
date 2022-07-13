@@ -19,8 +19,6 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",
     "nuxt": "^2.15.8",
-    "sass": "^1.53.0",
-    "sass-loader": "^10",
     "vue": "^2.7.5",
     "vue-server-renderer": "^2.7.5",
     "vue-template-compiler": "^2.7.5",

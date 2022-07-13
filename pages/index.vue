@@ -1,37 +1,25 @@
 <template>
-<<<<<<< HEAD
-  <div>
+  <div class="fullscreen">
     <FlyOut />
     <DetailsPane />
+    <vue-layer-map :initial-zoom="6" :initial-center="[4.356998572,50.855996576]">
+      <template #features>
+        <vue-layer-marker :coordinates="[4.356998572,50.855996576]" />
+      </template>
+    </vue-layer-map>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import FlyOut from '~/components/FlyOut.vue'
-import DetailsPane from '~/components/DetailsPane.vue'
-
-export default Vue.extend({
-    name: "IndexPage",
-    components: { FlyOut, DetailsPane }
-})
-=======
-  <vue-layer-map :initial-zoom="6" :initial-center="[4.356998572,50.855996576]">
-    <template #features>
-      <vue-layer-marker :coordinates="[4.356998572,50.855996576]" />
-    </template>
-  </vue-layer-map>
-</template>
-
-<script lang="ts">
 import Vue from "vue";
+import FlyOut from "~/components/FlyOut.vue";
+import DetailsPane from "~/components/DetailsPane.vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 
 export default Vue.extend({
-  name: "IndexPage",
-  components: { VueLayerMarker }
+    name: "IndexPage",
+    components: { FlyOut, DetailsPane, VueLayerMarker }
 });
->>>>>>> master
 </script>
 
 <style lang="scss">
@@ -42,7 +30,7 @@ export default Vue.extend({
  *
  * TODO: Export html & body styling to layout component
  */
-html, body, #__nuxt, #__layout{
+html, body, #__nuxt, #__layout,.fullscreen {
     height: 100%;
     width: 100%;
 }
