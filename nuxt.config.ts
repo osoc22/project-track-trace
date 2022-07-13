@@ -47,7 +47,7 @@ const config: NuxtConfig = {
 		"bootstrap-vue/nuxt",
 		// https://go.nuxtjs.dev/pwa
 		"@nuxtjs/pwa",
-		"~/modules/vueLayers.js"
+		"~/modules/vueLayers.ts"
 	],
 
 	// PWA module configuration: https://go.nuxtjs.dev/pwa
