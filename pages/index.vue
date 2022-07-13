@@ -1,5 +1,5 @@
 <template>
-  <vue-layer-map :initial-zoom="6" :initial-center="[longitude, latitude]">
+  <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
     <template #features>
       <vue-layer-marker :coordinates="[longitude, latitude]" />
     </template>
@@ -8,7 +8,6 @@
 
 <script lang="ts">
     import Vue from "vue";
-    import { connect } from "mqtt";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
 
     export default Vue.extend({
@@ -17,81 +16,29 @@
         data () {
             return {
                 longitude: 0,
-                latitude: 0
+                latitude: 0,
+                zoom: 6
             };
         },
         mounted () {
-            this.connectToClient();
-        },
-        methods: {
-            connectToClient () {
-                const token = process.env.FLESPI_KEY || "not found"; // TODO : Handle when the key isn't there
-                if (token.length !== 64) {
-                    console.log("please check the token");
-                    return;
-                }
-                const client = connect("wss://mqtt.flespi.io", {
-                    clientId: process.env.FLESPI_CLIENT_ID,
-                    // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
-                    username: "FlespiToken " + token,
-                    protocolVersion: 5,
-                    clean: true
-                });
-
-                // TODO : we should be able to see all trackers and not only one
-                client.on("connect", () => {
-                    // Subscribe to the telemetry topic
-                    client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err) => {
-                        if (err) {
-                            console.log("failed to subscribe to topic \"test\":", err);
-                            return;
-                        }
-                        console.log("subscribed to \"test\"");
-                    });
-                });
-
-                client.on("message", (topic, msg) => {
-                    this.filter(topic, msg.toString("utf8"));
-                });
-
-                client.on("close", () => {
-                    console.log("disconnected");
-                });
-
-                client.on("error", (err) => {
-                    console.log("mqtt client error:", err);
-                    client.end(true); // force disconnect
-                });
-            },
-            filter (topic: string, msg: string) {
-                const splitTopic: string[] = topic.split("/");
-                const informationName: string = splitTopic[splitTopic.length - 1];
-
-                if (informationName === "position.longitude") {
-                    // ref[0] = Number(msg);
-                    this.longitude = Number(msg);
-                } else if (informationName === "position.latitude") {
-                    // ref[1] = Number(msg);
-                    this.latitude = Number(msg);
-                }
-            }
+            this.$connectToClient();
         }
     });
 </script>
 
 <style lang="scss">
-/*
- * This works to make the map responsive,
- * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
- * But, I can't seem to get to get multiple layout working *just* yet.
- *
- * TODO : Export html & body styling to layout component
- */
-html,
-body,
-#__nuxt,
-#__layout {
-    height: 100%;
-    width: 100%;
-}
+    /*
+     * This works to make the map responsive,
+     * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
+     * But, I can't seem to get to get multiple layout working *just* yet.
+     *
+     * TODO : Export html & body styling to layout component
+     */
+    html,
+    body,
+    #__nuxt,
+    #__layout {
+        height: 100%;
+        width: 100%;
+    }
 </style>

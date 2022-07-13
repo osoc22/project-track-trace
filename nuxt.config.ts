@@ -27,7 +27,8 @@ const config: NuxtConfig = {
 		{
 			src: "@/plugins/vueLayers.js",
 			ssr: false
-		}
+		},
+        "~/plugins/index.ts"
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
