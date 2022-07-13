@@ -3,15 +3,27 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
     methods: {
+      /**
+       * function template in case we want to implement search
+       */
         performSearch(){
           console.log("performing search");
         },
+        /**
+         * event triggered when clicking on a list item
+         * @param event the event that triggered the function
+         * @param details the list of details passed in, see the data()/trackers part
+         */
         clickListItem(event : MouseEvent, details : Object) {
           let targetElement = event.target as HTMLElement;
           this.resetActive(targetElement);
           // emit data through root, to be caught by the DetailsPane component
           this.$root?.$emit("details",targetElement.innerText, details);
         },
+        /**
+         * resets the active element to the given one, if it is not already active itself
+         * @param element the element for which to re-set the active class
+         */
         resetActive(element : HTMLElement) {
           let add : Boolean = !element.classList.contains('active');
           this.clearActive();
@@ -19,6 +31,10 @@ export default defineComponent({
             element.classList.add('active');
           }
         },
+        /**
+         * gets called whenever the active element of the search list must be cleared
+         * and does this by looping over all 'active' elements
+         */
         clearActive(){
         let currentActive : HTMLCollectionOf<Element> = document.getElementsByClassName("active");
           for (var i = 0; i < currentActive.length; i++) {
@@ -27,12 +43,19 @@ export default defineComponent({
         }
     },
     mounted(){
-      this.$root?.$on("details-toggled", ()=> {
+      /**
+       * event triggered on closing the details window, sent from the DetailsPane component
+       */
+      this.$root?.$on("details-closed", ()=> {
         this.clearActive();
       })
     },
     data(){
       return {
+        /**
+         * example trackers list, where the value will be all relevant info for that tracker
+         * There is no need for these value lists to be equal size, some can have more/less pairs
+         */
         trackers: {
           'Alpha 01' : {"description": "Description of Alpha 01","nickname": "Florian"},
           'Alpha 02' : {"description": "Description of Alpha 02","nickname": "Bo"},

@@ -26,6 +26,11 @@ export default defineComponent({
         };
     },
     mounted(){
+      /**
+       * event triggered on toggling the details window
+       * @param name the name of the tracker to show in the details pane
+       * @param trackerDetails the tracker details Object (key-value pairs)
+       */
         this.$root?.$on("details", (name : string, trackerDetails : Object) => {
           if(!this.open || this.name === name){
             document.getElementById("details-toggle")?.click();
@@ -35,9 +40,13 @@ export default defineComponent({
         })
     },
     methods: {
+      /**
+       * function called by details pane being hidden
+       * emits an event via the root to notify that the details pane has been closed
+       */
       onSidebarClose(){
         this.open=false;
-        this.$root?.$emit('details-toggled');
+        this.$root?.$emit('details-closed');
         this.name='';
       }
     }
@@ -65,11 +74,14 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+  $dark-blue: #141f2e;
+  
   #details {
     height: 80%;
     width: 15%;
     margin-top: 5%;
     border-radius: 20px 0 0 20px;
     position: fixed;
+    background-color: $dark-blue !important;
   }
 </style>
