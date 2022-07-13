@@ -1,26 +1,28 @@
 <script lang="ts">
 import Vue from 'vue'
+
 export default Vue.extend({
     methods: {
-        // temporary function to generate list items -> to be replaced by actual data
-        generateList() {
-            const trackerList = document.getElementById("trackerList");
-            if(trackerList != null){
-                trackerList.innerHTML = "";
-                for (let i = 0; i < 7; i++) {
-                    let li = document.createElement("li");
-                    let name = `Alpha ${String(i)}`;
-                    li.classList.add("list-group-item");
-                    li.innerText = name;
-                    let docRoot = this.$root;
-                    li.addEventListener('click', function(event){
-                        const clickElement = event.target as HTMLElement;
-                        docRoot.$emit("details",clickElement.innerText);
-                    })
-                    trackerList.appendChild(li);
-                }
-            }
+        performSearch(){
+          console.log("performing search");
+        },
+        clickListItem(event : MouseEvent, details : Object) {
+          let targetElement = event.target as HTMLElement;
+          // emit data through root, to be caught by the DetailsPane component
+          this.$root.$emit("details",targetElement.innerText, details);
+        },
+    },
+    data(){
+      return {
+        trackers: {
+          'Alpha 01' : {"description": "Description of Alpha 01","nickname": "Florian"},
+          'Alpha 02' : {"description": "Description of Alpha 02","nickname": "Bo"},
+          'Alpha 03' : {"description": "Description of Alpha 03","nickname": "Ben"},
+          'Alpha 04' : {"description": "Description of Alpha 04","nickname": "Joshua"},
+          'Phone 01' : {"description": "Description of Phone 01","nickname": "Meg"},
+          'Phone 02' : {"description": "Description of Phone 02","nickname": "Jonathan", "groups" : "NCCN, flooding,  kitten stuck in a tree"},
         }
+      }
     }
 })
 </script>
@@ -33,7 +35,7 @@ export default Vue.extend({
             <b-input-group>
               <b-form-input size="sm" placeholder="search tracker"></b-form-input>
               <b-input-group-append>
-                <b-button size="sm" variant="outline-success" @click="generateList">🔍</b-button>
+                <b-button size="sm" variant="outline-success" @click="performSearch">🔍</b-button>
               </b-input-group-append>
             </b-input-group>
           </div>
@@ -44,6 +46,9 @@ export default Vue.extend({
           <div class="col-sm-2"></div>
           <div class="col-sm-8">
             <ul class="list-group" id="trackerList">
+              <li class="list-group-item" v-for="(item, index) in trackers" :key="index" @click="clickListItem($event, item)">
+                {{ index }}
+              </li>
             </ul>
           </div>
           <div class="col-sm-2"></div>
