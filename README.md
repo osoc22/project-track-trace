@@ -1,6 +1,6 @@
-# project-nccn
+# Paradar
 
-## Build Setup
+## Get Started & Live
 
 ```bash
 # install dependencies
@@ -18,6 +18,12 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+
+## TypeScript
+This project uses the Nuxt TypeScript for TypeScript Support. More info can be found [here](https://typescript.nuxtjs.org/)
+
+## Progressive Web App
+This web app is packaged as a Progressive Web App, giving it some additional optimization & configuration. More info can be found [here](https://pwa.nuxtjs.org/) 
 
 ## Special Directories
 
