@@ -17,6 +17,12 @@ $ yarn start
 $ yarn generate
 ```
 
+## `.env`
+| Key              | Explanation                                                         | Example         |
+|------------------|---------------------------------------------------------------------|-----------------|
+| FLESPI_KEY       | The API key needed to contact the Flespi server                     | AHVSIB27836     |
+| FLESPI_CLIENT_ID | Client ID to setup the client object that connects to Flespi server | track-and-trace |
+
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
 ## TypeScript

@@ -27,7 +27,8 @@ const config: NuxtConfig = {
 		{
 			src: "@/plugins/vueLayers.js",
 			ssr: false
-		}
+		},
+        "~/plugins/flespiConnector.ts"
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -38,7 +39,9 @@ const config: NuxtConfig = {
 		// https://go.nuxtjs.dev/typescript
 		"@nuxt/typescript-build",
 		// https://go.nuxtjs.dev/stylelint
-		"@nuxtjs/stylelint-module"
+		"@nuxtjs/stylelint-module",
+		// https://www.npmjs.com/package/@nuxtjs/dotenv
+		"@nuxtjs/dotenv"
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
@@ -67,6 +70,11 @@ const config: NuxtConfig = {
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {
+		extend (config, ctx) {
+			if (ctx.isDev) {
+				config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
+			}
+		}
 	}
 };
 

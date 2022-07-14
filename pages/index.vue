@@ -2,36 +2,60 @@
   <div class="fullscreen">
     <FlyOut />
     <DetailsPane />
-    <vue-layer-map :initial-zoom="6" :initial-center="[4.356998572,50.855996576]">
+    <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
       <template #features>
-        <vue-layer-marker :coordinates="[4.356998572,50.855996576]" />
+        <vue-layer-marker :coordinates="[longitude, latitude]" />
       </template>
     </vue-layer-map>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import FlyOut from "~/components/FlyOut.vue";
-import DetailsPane from "~/components/DetailsPane.vue";
-import VueLayerMarker from "~/components/VueLayerMarker.vue";
+    import Vue from "vue";
+    import VueLayerMarker from "~/components/VueLayerMarker.vue";
+    import FlyOut from "~/components/FlyOut.vue";
+    import DetailsPane from "~/components/DetailsPane.vue";
+    import { eventBus } from "~/plugins/flespiConnector";
 
-export default Vue.extend({
-    name: "IndexPage",
-    components: { FlyOut, DetailsPane, VueLayerMarker }
-});
+    export default Vue.extend({
+        name: "IndexPage",
+        components: { VueLayerMarker, FlyOut, DetailsPane },
+        data () {
+            return {
+                longitude: 4.3601,
+                latitude: 50.5,
+                zoom: 8,
+                client: this.$getPositionData()
+            };
+        },
+        created () {
+            eventBus.$on("newCoordinates", (data: number[]) => {
+                this.longitude = data[0];
+                this.latitude = data[1];
+            });
+        },
+        beforeDestroy () {
+            this.client.on("close", () => {
+                this.client.end(true); // force disconnect
+            });
+
+            this.client.on("error", () => {
+                this.client.end(true); // force disconnect
+            });
+        }
+    });
 </script>
 
 <style lang="scss">
-/*
- * This works to make the map responsive,
- * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
- * But, I can't seem to get to get multiple layout working *just* yet.
- *
- * TODO: Export html & body styling to layout component
- */
-html, body, #__nuxt, #__layout,.fullscreen {
-    height: 100%;
-    width: 100%;
-}
+    /*
+    * This works to make the map responsive,
+    * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
+    * But, I can't seem to get to get multiple layout working *just* yet.
+    *
+    * TODO: Export html & body styling to layout component
+    */
+    html, body, #__nuxt, #__layout,.fullscreen {
+        height: 100%;
+        width: 100%;
+    }
 </style>
