@@ -81,8 +81,8 @@ const indexPlugin: Plugin = (context, inject) => {
         client.on("connect", () => {
             /*
              * Subscribe to the telemetry topic
-             * Alfa 03 : flespi/state/gw/devices/4530445/telemetry/#
-             * Alfa 01 : flespi/state/gw/devices/4527117/telemetry/#
+             * Alfa 03 : flespi/state/gw/devices/4527117/telemetry/#
+             * Alfa 01 : flespi/state/gw/devices/4530445/telemetry/#
              */
             client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err) => {
                 if (err) {
