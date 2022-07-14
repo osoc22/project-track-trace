@@ -23,6 +23,7 @@ declare module "@nuxt/types" {
 }
 
 declare module "vuex/types/index" {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Store<S> {
         $getPositionData(): MqttClient
     }
@@ -110,7 +111,7 @@ function emitNewCoordinates (position: Position): void {
     eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
 }
 
-const mqttPlugin: Plugin = (context, inject: Inject) => {
+const mqttPlugin: Plugin = (_context, inject: Inject) => {
     inject("getPositionData", () => {
         return createClient();
     });
