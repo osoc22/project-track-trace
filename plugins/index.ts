@@ -32,20 +32,30 @@ declare module "vuex/types/index" {
  */
 export const eventBus = new Vue(); // creating an event bus.
 
-function emitNewCoordinates (topic: string, content: string): void {
-    let longitude: number = 0;
-    let latitude: number = 0;
+export interface Position {
+    altitude: number,
+    direction: number,
+    hdop: number,
+    latitude: number,
+    longitude: number,
+    pdop: number,
+    satellites: number,
+    speed: number,
+    valid: boolean
+}
 
-    const splitTopic: string[] = topic.split("/");
-    const informationName: string = splitTopic[splitTopic.length - 1];
+/**
+ * Emits the new coordinates to the parent component
+ */
+function emitNewCoordinates (position: Position): void {
+    eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
+}
 
-    if (informationName === "position.longitude") {
-        longitude = Number(content);
-    } else if (informationName === "position.latitude") {
-        latitude = Number(content);
-    }
-
-    eventBus.$emit("newCoordinates", [longitude, latitude]);
+/**
+ * Convert the position string to an actual object
+ */
+function convertToObject (json: string): Position {
+    return JSON.parse(json);
 }
 
 const indexPlugin: Plugin = (context, inject) => {
@@ -69,7 +79,11 @@ const indexPlugin: Plugin = (context, inject) => {
          * When the client is connected, we subscribe to the telemetry topic
          */
         client.on("connect", () => {
-            // Subscribe to the telemetry topic
+            /*
+             * Subscribe to the telemetry topic
+             * Alfa 03 : flespi/state/gw/devices/4530445/telemetry/#
+             * Alfa 01 : flespi/state/gw/devices/4527117/telemetry/#
+             */
             client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err) => {
                 if (err) {
                     // TODO : handle in a correct way
@@ -79,7 +93,13 @@ const indexPlugin: Plugin = (context, inject) => {
 
         // emits new coordinates whenever the subscription receives new data
         client.on("message", (topic, msg) => {
-            emitNewCoordinates(topic, msg.toString("utf8"));
+            // topic as received is : flespi/state/gw/devices/4530445/telemetry/<informationName>
+            const splitTopic: string[] = topic.split("/");
+            const informationName: string = splitTopic[splitTopic.length - 1];
+
+            if (informationName === "position") {
+                emitNewCoordinates(convertToObject(msg.toString("utf8")));
+            }
         });
 
         client.on("close", () => { }); // TODO : handle in a correct way
