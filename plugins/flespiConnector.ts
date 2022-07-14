@@ -1,5 +1,5 @@
 import { connect, MqttClient } from "mqtt";
-import { Plugin } from "@nuxt/types";
+import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
 import { Inject } from "@nuxt/types/app";
 
@@ -7,7 +7,7 @@ declare module "vue/types/vue" {
     interface Vue {
         /**
          * Connects to Flespi client and fetch position data.
-         * @returns void
+         * @returns The mqtt client connected to Flespi
          */
         $getPositionData(): MqttClient
     }
@@ -15,9 +15,17 @@ declare module "vue/types/vue" {
 
 declare module "@nuxt/types" {
     interface NuxtAppOptions {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
         $getPositionData(): MqttClient
     }
     interface Context {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
         $getPositionData(): MqttClient
     }
 }
@@ -25,6 +33,10 @@ declare module "@nuxt/types" {
 declare module "vuex/types/index" {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Store<S> {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
         $getPositionData(): MqttClient
     }
 }
@@ -78,7 +90,7 @@ function createClient (): MqttClient {
          */
         client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err: Error) => {
             if (err) {
-                // TODO : handle in a correct way
+                client.end(true); // force disconnect
             }
         });
     });
@@ -111,7 +123,10 @@ function emitNewCoordinates (position: Position): void {
     eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
 }
 
-const mqttPlugin: Plugin = (_context, inject: Inject) => {
+/**
+ * Mqtt method plugin
+ */
+const mqttPlugin: Plugin = (_context: Context, inject: Inject) => {
     inject("getPositionData", () => {
         return createClient();
     });
