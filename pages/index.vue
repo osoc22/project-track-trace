@@ -9,7 +9,7 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import { eventBus } from "~/plugins";
+    import { eventBus } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
@@ -18,7 +18,8 @@
             return {
                 longitude: 0,
                 latitude: 0,
-                zoom: 6
+                zoom: 6,
+                client: this.$getPositionData()
             };
         },
         created () {
@@ -27,8 +28,14 @@
                 this.latitude = data[1];
             });
         },
-        mounted () {
-            this.$getPositionData();
+        beforeDestroy () {
+            this.client.on("close", () => {
+                this.client.end(true); // force disconnect
+            });
+
+            this.client.on("error", () => {
+                this.client.end(true); // force disconnect
+            });
         }
     });
 </script>
