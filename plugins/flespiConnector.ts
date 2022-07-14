@@ -68,7 +68,7 @@ export interface Position {
  */
 function createClient (): MqttClient {
     // Token used to connect to Flespi
-    const token = process.env.FLESPI_KEY; // TODO : Handle when the key isn't there
+    const token = process.env.FLESPI_KEY;
 
     // Creating and connecting Flespi client
     const client: MqttClient = connect("wss://mqtt.flespi.io", {
