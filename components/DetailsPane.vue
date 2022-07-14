@@ -55,7 +55,7 @@ export default defineComponent({
 
 <template>
   <div id="details-wrapper">
-    <b-button id="details-toggle" v-b-toggle.details style="display: none;" @click="open=!open" />
+    <b-button id="details-toggle" v-b-toggle.details @click="open=!open" />
     <b-sidebar
       id="details"
       bg-variant="dark"
@@ -81,6 +81,10 @@ export default defineComponent({
 
 <style lang="scss">
   $dark-blue: #141f2e;
+
+  #details-toggle {
+    display: none;
+  }
 
   #details {
     height: 80%;

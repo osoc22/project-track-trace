@@ -10,7 +10,7 @@ export default defineComponent({
             default: false
         }
     },
-    data () : Object {
+    data () {
         return {
             open: this.initOpen
         };

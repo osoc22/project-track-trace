@@ -31,7 +31,7 @@ export default defineComponent({
        * function template in case we want to implement search
        */
         performSearch () {
-          console.log("performing search");
+
         },
         /**
          * event triggered when clicking on a list item
