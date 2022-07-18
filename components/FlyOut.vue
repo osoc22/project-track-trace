@@ -36,6 +36,7 @@ export default defineComponent({
   #flyout {
     height: 80%;
     width: 15%;
+    min-width: max-content;
     margin-top: 5%;
     border-radius: 0 20px 20px 0;
     position: fixed;
@@ -46,6 +47,7 @@ export default defineComponent({
   .b-sidebar-body{
     display: flex;
     flex-flow: column nowrap;
+    max-width: fit-content;
     gap: 2rem;
   }
 

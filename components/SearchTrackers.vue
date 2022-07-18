@@ -101,6 +101,12 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
+  .container{
+    display: flex;
+    flex-flow: column nowrap;
+    width: fit-content;
+    max-width: max-content;
+  }
   li:nth-child(even):not(.active) {
     background: #fff;
   }

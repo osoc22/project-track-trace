@@ -37,6 +37,7 @@ export default Vue.extend({
     width: fit-content;
     display: flex;
     flex-flow: row nowrap;
+    min-width: max-content;
     gap: 0.5rem;
     p {
         margin: 0;
