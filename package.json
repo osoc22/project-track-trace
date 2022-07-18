@@ -21,9 +21,9 @@
     "core-js": "^3.19.3",
     "mqtt": "^4.3.7",
     "nuxt": "^2.15.8",
-    "vue": "^2.7.5",
+    "vue": "^2.7.7",
     "vue-server-renderer": "^2.7.5",
-    "vue-template-compiler": "^2.7.5",
+    "vue-template-compiler": "^2.7.7",
     "vuelayers": "^0.12.3",
     "webpack": "^4.46.0"
   },
