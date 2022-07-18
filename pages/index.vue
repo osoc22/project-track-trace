@@ -1,6 +1,9 @@
 <template>
   <div class="fullscreen">
-    <FlyOut />
+    <fly-out>
+      <phone-tracking-button />
+      <SearchTrackers />
+    </fly-out>
     <DetailsPane />
     <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
       <template #features>
