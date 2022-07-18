@@ -43,6 +43,12 @@ export default defineComponent({
     background-color: $dark-blue !important;
   }
 
+  .b-sidebar-body{
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 2rem;
+  }
+
   #flyout-toggle {
     margin-top: 5%;
     position: fixed;

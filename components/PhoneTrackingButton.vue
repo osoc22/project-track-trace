@@ -31,3 +31,15 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.btn {
+    width: fit-content;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 0.5rem;
+    p {
+        margin: 0;
+    }
+}
+</style>
