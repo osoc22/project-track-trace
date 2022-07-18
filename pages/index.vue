@@ -1,7 +1,7 @@
 <template>
   <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
     <template #features>
-      <vue-layer-marker v-for="(value, key) in positions" :key="key" :coordinates="[value.longitude, value.latitude]" />
+      <vue-layer-marker :coordinates="[longitude, latitude]" />
     </template>
   </vue-layer-map>
 </template>
@@ -9,7 +9,7 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import { eventBus, Device, Position } from "~/plugins/flespiConnector";
+    import { eventBus } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
@@ -19,15 +19,15 @@
                 longitude: 0,
                 latitude: 0,
                 zoom: 6,
-                client: this.$initiateClient(),
-                positions: new Map<Device, Position>()
+                client: this.$initiateClient() // Initiate the client
             };
         },
         async fetch () {
-            const devices = await this.$getDeviceList();
-            devices.forEach(device => this.positions.set(device, { longitude: 0, latitude: 0 }));
-            //this.client = this.$getPositionData(devices);
+            // Gets the list of channels on which we will subscribe to get trackers data
+            const channels = await this.$getChannelList();
+            this.client = this.$getPositionData(this.client, channels); // Get the GPS data
         },
+        fetchOnServer: false,
         created () {
             eventBus.$on("newCoordinates", (data: number[]) => {
                 this.longitude = data[0];

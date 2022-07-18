@@ -22,7 +22,7 @@ export interface Position {
 /**
  * A device connected to Flespi
  */
-export interface Device {
+export interface Channel {
     id: number,
     name: string
 }
@@ -35,8 +35,8 @@ declare module "vue/types/vue" {
          * @returns The mqtt client connected to Flespi
          */
         $initiateClient(): MqttClient
-        $getPositionData(devices: Device[]): MqttClient
-        $getDeviceList(): Promise<Device[]>
+        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
     }
 }
 
@@ -46,16 +46,18 @@ declare module "@nuxt/types" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(devices: Device[]): MqttClient
-        $getDeviceList(): Promise<Device[]>
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
     }
     interface Context {
         /**
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(devices: Device[]): MqttClient
-        $getDeviceList(): Promise<Device[]>
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
     }
 }
 
@@ -66,8 +68,9 @@ declare module "vuex/types/index" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(devices: Device[]): MqttClient
-        $getDeviceList(): Promise<Device[]>
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
     }
 }
 
@@ -96,32 +99,30 @@ function createClient (): MqttClient {
  *
  * @returns the connected client
  */
-function setupClient (devices: Device[]): MqttClient {
-    const client:MqttClient = createClient();
-
+function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
-        devices.forEach((device) => {
-             client.subscribe("flespi/state/gw/devices/" + device.id + "/telemetry/#", { qos: 1 }, (err: Error) => {
+        channels.forEach((channel: Channel) => {
+            console.log("flespi/message/gw/channels/" + channel.id + "/+");
+             client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
                  if (err) {
                      client.end(true); // force disconnect
                  }
              });
-            console.log("testttt", device);
         });
     });
 
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
-        // topic as received is : flespi/state/gw/devices/4530445/telemetry/<informationName>
-        const splitTopic: string[] = topic.split("/");
+        console.log(topic, msg.toString("utf8"));
+        /* const splitTopic: string[] = topic.split("/");
         const informationName: string = splitTopic[splitTopic.length - 1];
         const deviceID: number = Number(splitTopic[splitTopic.length - 3]); // Get the device ID
 
         if (informationName === "position") {
             // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
             console.log("emit new coordinates");
-        }
+        } */
     });
 
     return client;
@@ -142,16 +143,16 @@ function emitNewCoordinates (position: Position): void {
 }
 
 /**
- * Calls Flespi API to get the list of all connected devices
+ * Calls Flespi API to get the list of all active channels
  */
-async function callAPI (): Promise<Device[]> {
+async function callAPI (): Promise<Channel[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
-    const devices: Device[] = [];
+    const channels: Channel[] = [];
 
     // Get the data via the API
     const pendingResponse = await fetch(
-    "https://flespi.io/gw/devices/all",
+    "https://flespi.io/gw/channels/all",
     {
             headers: {
                 Authorization: token
@@ -162,10 +163,10 @@ async function callAPI (): Promise<Device[]> {
     const json = await pendingResponse.json();
 
     for (let i = 0; i < json.result.length; i++) {
-        devices.push(json.result[i]);
+        channels.push(json.result[i]);
     }
 
-    return devices;
+    return channels;
 }
 
 /**
@@ -175,10 +176,10 @@ const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", () => {
         return createClient();
     });
-    inject("getPositionData", (devices: Device[]) => {
-        return setupClient(devices);
+    inject("getPositionData", (client: MqttClient, channels: Channel[]) => {
+        return setupClient(client, channels);
     });
-    inject("getDeviceList", () => {
+    inject("getChannelList", () => {
         return callAPI();
     });
 };
