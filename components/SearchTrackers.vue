@@ -69,13 +69,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="container" text-variant="light">
+  <div text-variant="light">
     <!-- search box row-->
-    <div class="row align-items-center form-group">
-      <div class="col-sm-2" />
-      <div class="col-sm-8">
+    <div class="form-group mx-auto w-100">
+      <div />
+      <div>
         <b-input-group>
-          <b-form-input size="sm" placeholder="search tracker" />
+          <b-form-input size="sm" placeholder="Search Tracker" />
           <b-input-group-append>
             <b-button size="sm" variant="outline-success" @click="performSearch">
               🔍
@@ -83,30 +83,24 @@ export default defineComponent({
           </b-input-group-append>
         </b-input-group>
       </div>
-      <div class="col-sm-2" />
+      <div />
     </div>
     <!-- tracker data row-->
-    <div class="row align-items-center align-text-center">
-      <div class="col-sm-2" />
-      <div class="col-sm-8">
-        <ul id="trackerList" class="list-group">
+    <div class>
+      <div />
+      <div>
+        <ul id="trackerList" class="list-group w-100%">
           <li v-for="(item, index) in trackers" :id="index" :key="index" class="list-group-item" @click="clickListItem($event, item)">
             {{ index }}
           </li>
         </ul>
       </div>
-      <div class="col-sm-2" />
+      <div />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-  .container{
-    display: flex;
-    flex-flow: column nowrap;
-    width: fit-content;
-    max-width: max-content;
-  }
   li:nth-child(even):not(.active) {
     background: #fff;
   }

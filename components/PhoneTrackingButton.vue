@@ -1,5 +1,5 @@
 <template>
-  <b-button @click="(tracking) ? StopTracking() : StartTracking()">
+  <b-button class="d-flex justify-content-center" @click="(tracking) ? StopTracking() : StartTracking()">
     <b-icon-pin-map />
     <p>{{ tracking ? "Stop Tracking" : "Track me!" }}</p>
   </b-button>

@@ -1,7 +1,6 @@
 <template>
-  <b-button v-b-toggle.flyout class="shadow-none" squared @click="open= ! open">
-    <img v-if="!open" src="/svg/burger-menu.svg" width="32" height="32">
-    <img v-else src="/svg/close-menu.svg" width="32" height="32">
+  <b-button class="d-flex">
+    <b-icon-list />
   </b-button>
 </template>
 

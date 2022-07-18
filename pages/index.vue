@@ -1,10 +1,12 @@
 <template>
   <div class="fullscreen">
-    <fly-out>
-      <phone-tracking-button />
-      <SearchTrackers />
-    </fly-out>
-    <DetailsPane />
+    <fly-out-base>
+      <div class="d-flex flex-column align-items-start container">
+        <phone-tracking-button class="my-1 w-100" />
+        <search-trackers class="my-1" />
+      </div>
+    </fly-out-base>
+    <details-pane />
     <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
       <template #features>
         <vue-layer-marker :coordinates="[longitude, latitude]" />
@@ -16,13 +18,13 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import FlyOut from "~/components/FlyOut.vue";
+    import FlyOutBase from "~/components/FlyOut/FlyOutBase.vue";
     import DetailsPane from "~/components/DetailsPane.vue";
     import { eventBus } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
-        components: { VueLayerMarker, FlyOut, DetailsPane },
+        components: { VueLayerMarker, FlyOutBase, DetailsPane },
         data () {
             return {
                 longitude: 4.3601,
