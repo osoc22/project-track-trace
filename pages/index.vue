@@ -10,7 +10,6 @@
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
     import { eventBus, Device, Position } from "~/plugins/flespiConnector";
-    import { connect } from "mqtt";
 
     export default Vue.extend({
         name: "IndexPage",
@@ -20,21 +19,14 @@
                 longitude: 0,
                 latitude: 0,
                 zoom: 6,
-                client: this.$getPositionData([]),
+                client: this.$initiateClient(),
                 positions: new Map<Device, Position>()
             };
         },
         async fetch () {
             const devices = await this.$getDeviceList();
             devices.forEach(device => this.positions.set(device, { longitude: 0, latitude: 0 }));
-            // this.client = this.$getPositionData(devices);
-            this.client = connect("wss://mqtt.flespi.io", {
-            clientId: process.env.FLESPI_CLIENT_ID,
-                // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
-                username: "FlespiToken " + process.env.FLESPI_KEY,
-                protocolVersion: 5,
-                clean: true
-        });
+            //this.client = this.$getPositionData(devices);
         },
         created () {
             eventBus.$on("newCoordinates", (data: number[]) => {

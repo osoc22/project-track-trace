@@ -34,6 +34,7 @@ declare module "vue/types/vue" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
+        $initiateClient(): MqttClient
         $getPositionData(devices: Device[]): MqttClient
         $getDeviceList(): Promise<Device[]>
     }
@@ -78,34 +79,34 @@ export const eventBus = new Vue(); // creating an event bus.
 
 /// Methods
 /**
- * Creates the MqttClient to connect with Flespi
- *
- * @returns the connected client
+ * Creating and connecting Flespi client
  */
-function createClient (devices: Device[]): MqttClient | null {
-    if (devices.length === 0) { return null; }
-    console.log("createCilent");
-    // Creating and connecting Flespi client
-    const client: MqttClient = connect("wss://mqtt.flespi.io", {
+function createClient (): MqttClient {
+    return connect("wss://mqtt.flespi.io", {
         clientId: process.env.FLESPI_CLIENT_ID,
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
         username: "FlespiToken " + process.env.FLESPI_KEY,
         protocolVersion: 5,
         clean: true
     });
+}
 
-    // Starting setup of the client
+/**
+ * Creates the MqttClient to connect with Flespi
+ *
+ * @returns the connected client
+ */
+function setupClient (devices: Device[]): MqttClient {
+    const client:MqttClient = createClient();
 
     // When the client is connected, we subscribe to the telemetry topic
-    /* client.on("connect", () => {
+    client.on("connect", () => {
         devices.forEach((device) => {
-            /!*
-             * client.subscribe("flespi/state/gw/devices/" + device.id + "/telemetry/#", { qos: 1 }, (err: Error) => {
-             *     if (err) {
-             *         client.end(true); // force disconnect
-             *     }
-             * });
-             *!/
+             client.subscribe("flespi/state/gw/devices/" + device.id + "/telemetry/#", { qos: 1 }, (err: Error) => {
+                 if (err) {
+                     client.end(true); // force disconnect
+                 }
+             });
             console.log("testttt", device);
         });
     });
@@ -121,7 +122,7 @@ function createClient (devices: Device[]): MqttClient | null {
             // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
             console.log("emit new coordinates");
         }
-    }); */
+    });
 
     return client;
 }
@@ -141,7 +142,7 @@ function emitNewCoordinates (position: Position): void {
 }
 
 /**
- * calls Flespi API to get the list of all connected devices
+ * Calls Flespi API to get the list of all connected devices
  */
 async function callAPI (): Promise<Device[]> {
     // Token needed to authenticate in Flespi
@@ -171,8 +172,11 @@ async function callAPI (): Promise<Device[]> {
  * Method plugin
  */
 const plugin: Plugin = (_context: Context, inject: Inject) => {
+    inject("initiateClient", () => {
+        return createClient();
+    });
     inject("getPositionData", (devices: Device[]) => {
-        return createClient([]);
+        return setupClient(devices);
     });
     inject("getDeviceList", () => {
         return callAPI();
