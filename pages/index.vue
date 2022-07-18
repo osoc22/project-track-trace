@@ -9,7 +9,7 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import { eventBus } from "~/plugins/flespiConnector";
+    import { eventBus, Device } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
@@ -19,8 +19,13 @@
                 longitude: 0,
                 latitude: 0,
                 zoom: 6,
-                client: this.$getPositionData()
+                client: this.$getPositionData(),
+                devices: [] as Device[]
             };
+        },
+        async fetch () {
+            const devices = await this.$getDeviceList();
+            devices.forEach(device => this.devices.push(device));
         },
         created () {
             eventBus.$on("newCoordinates", (data: number[]) => {

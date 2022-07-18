@@ -3,49 +3,7 @@ import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
 import { Inject } from "@nuxt/types/app";
 
-declare module "vue/types/vue" {
-    interface Vue {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $getPositionData(): MqttClient
-    }
-}
-
-declare module "@nuxt/types" {
-    interface NuxtAppOptions {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $getPositionData(): MqttClient
-    }
-    interface Context {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $getPositionData(): MqttClient
-    }
-}
-
-declare module "vuex/types/index" {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Store<S> {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $getPositionData(): MqttClient
-    }
-}
-
-/**
- * EventBus to transmit data to component.
- */
-export const eventBus = new Vue(); // creating an event bus.
-
+/// Models
 /**
  * Position interface to get position data from a tracker
  */
@@ -61,20 +19,72 @@ export interface Position {
     valid: boolean
 }
 
+export interface Device {
+    id: number,
+    name: string
+}
+
+/// Modules declaration
+declare module "vue/types/vue" {
+    interface Vue {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
+        $getPositionData(): MqttClient
+        $getDeviceList(): Promise<Device[]>
+    }
+}
+
+declare module "@nuxt/types" {
+    interface NuxtAppOptions {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
+        $getPositionData(): MqttClient
+        $getDeviceList(): Promise<Device[]>
+    }
+    interface Context {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
+        $getPositionData(): MqttClient
+        $getDeviceList(): Promise<Device[]>
+    }
+}
+
+declare module "vuex/types/index" {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Store<S> {
+        /**
+         * Connects to Flespi client and fetch position data.
+         * @returns The mqtt client connected to Flespi
+         */
+        $getPositionData(): MqttClient
+        $getDeviceList(): Promise<Device[]>
+    }
+}
+
+/// Event buses
+/**
+ * EventBus to transmit data to component.
+ */
+export const eventBus = new Vue(); // creating an event bus.
+
+/// Methods
 /**
  * Creates the MqttClient to connect with Flespi
  *
  * @returns the connected client
  */
 function createClient (): MqttClient {
-    // Token used to connect to Flespi
-    const token = process.env.FLESPI_KEY;
-
     // Creating and connecting Flespi client
     const client: MqttClient = connect("wss://mqtt.flespi.io", {
         clientId: process.env.FLESPI_CLIENT_ID,
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
-        username: "FlespiToken " + token,
+        username: "FlespiToken " + process.env.FLESPI_KEY,
         protocolVersion: 5,
         clean: true
     });
@@ -124,12 +134,42 @@ function emitNewCoordinates (position: Position): void {
 }
 
 /**
- * Mqtt method plugin
+ * calls Flespi API to get the list of all connected devices
  */
-const mqttPlugin: Plugin = (_context: Context, inject: Inject) => {
+async function callAPI (): Promise<Device[]> {
+    // Token needed to authenticate in Flespi
+    const token: string = "FlespiToken " + process.env.FLESPI_KEY;
+    const devices: Device[] = [];
+
+    // Get the data via the API
+    const pendingResponse = await fetch(
+    "https://flespi.io/gw/devices/all",
+    {
+            headers: {
+                Authorization: token
+            }
+        }
+    );
+
+    const json = await pendingResponse.json();
+
+    for (let i = 0; i < json.result.length; i++) {
+        devices.push(json.result[i]);
+    }
+
+    return devices;
+}
+
+/**
+ * Method plugin
+ */
+const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("getPositionData", () => {
         return createClient();
     });
+    inject("getDeviceList", () => {
+        return callAPI();
+    });
 };
 
-export default mqttPlugin;
+export default plugin;
