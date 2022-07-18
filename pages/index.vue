@@ -1,12 +1,18 @@
 <template>
   <div class="fullscreen">
-    <fly-out-base>
-      <div class="d-flex flex-column align-items-start container">
-        <phone-tracking-button class="my-1 w-100" />
-        <search-trackers class="my-1" />
-      </div>
-    </fly-out-base>
-    <details-pane />
+    <dual-fly-out class="menu">
+      <template #primary>
+        <div class="d-flex flex-column align-items-start container">
+          <phone-tracking-button class="my-1 w-100" />
+          <fly-out-button v-b-toggle.secondary-panel />
+        </div>
+      </template>
+      <template #secondary>
+        <div class="d-flex flex-column align-items-end container">
+          <p>test</p>
+        </div>
+      </template>
+    </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
       <template #features>
         <vue-layer-marker :coordinates="[longitude, latitude]" />
@@ -18,13 +24,12 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import FlyOutBase from "~/components/FlyOut/FlyOutBase.vue";
-    import DetailsPane from "~/components/DetailsPane.vue";
+    import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
     import { eventBus } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
-        components: { VueLayerMarker, FlyOutBase, DetailsPane },
+        components: { VueLayerMarker, DualFlyOut },
         data () {
             return {
                 longitude: 4.3601,
