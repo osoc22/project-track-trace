@@ -969,6 +969,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@fontsource/actor@^4.5.7":
+  version "4.5.7"
+  resolved "https://registry.yarnpkg.com/@fontsource/actor/-/actor-4.5.7.tgz#2d66cd1d85d52cf4c88bdab59c335cb7381b4c71"
+  integrity sha512-ImD+zfBaE119JsAmtBUtMOs7wxF9kMJ9YtB9+7CUiXRnw037rZeBLKIkzNa95nbwxANr+MC4es2anyVU6PcWVw==
+
 "@gar/promisify@^1.0.1":
   version "1.1.3"
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"

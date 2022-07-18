@@ -13,6 +13,7 @@
     "lintfix": "yarn lint:js --fix && yarn lint:style --fix"
   },
   "dependencies": {
+    "@fontsource/actor": "^4.5.7",
     "@nuxt/typescript-runtime": "^2.1.0",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/pwa": "^3.3.5",
