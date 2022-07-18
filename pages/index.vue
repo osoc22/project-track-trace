@@ -4,7 +4,8 @@
     <DetailsPane />
     <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
       <template #features>
-        <vue-layer-marker :coordinates="[longitude, latitude]" />
+        <vue-layer-marker id="marker" :coordinates="[longitude, latitude]"/>
+        <VueLayerMarkerPopup />
       </template>
     </vue-layer-map>
   </div>
@@ -13,13 +14,14 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
+    import VueLayerMarkerPopup from "~/components/VueLayerMarkerPopup.vue";
     import FlyOut from "~/components/FlyOut.vue";
     import DetailsPane from "~/components/DetailsPane.vue";
     import { eventBus } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
-        components: { VueLayerMarker, FlyOut, DetailsPane },
+        components: { VueLayerMarker, FlyOut, DetailsPane, VueLayerMarkerPopup },
         data () {
             return {
                 longitude: 4.3601,
@@ -43,7 +45,7 @@
                 this.client.end(true); // force disconnect
             });
         }
-    });
+    } );
 </script>
 
 <style lang="scss">
