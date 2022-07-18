@@ -32,6 +32,11 @@ export default defineComponent({
     emits: ["popup-toggled"],
     methods: {
       onSelect (e : any) {
+        /*
+         * WARNING: the needed coordinates are regular long/lat (°N °E)
+         * BE SURE TO CONVERT
+         */
+        e.feature.getGeometry().transform("EPSG:3857", "EPSG:4326");
         const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
         this.$root.$emit("popup-toggled", markerCoords);
       }
