@@ -19,14 +19,14 @@ export default Vue.extend({
   methods: {
     StartTracking () {
         this.tracking = true;
-        this.watcherId = navigator.geolocation.watchPosition(result => console.log(result));
-        console.log("Started tracking");
+        // Remove the line before when you're implementing this
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        this.watcherId = navigator.geolocation.watchPosition((result) => { /* Write your function here */ });
     },
     StopTracking () {
         this.tracking = false;
         navigator.geolocation.clearWatch(this.watcherId);
         this.watcherId = -1;
-        console.log("Stop tracking");
     }
   }
 });
