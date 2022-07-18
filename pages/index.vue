@@ -1,24 +1,30 @@
 <template>
-  <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
-    <template #features>
-      <vue-layer-marker :coordinates="[longitude, latitude]" />
-    </template>
-  </vue-layer-map>
+  <div class="fullscreen">
+    <FlyOut />
+    <DetailsPane />
+    <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
+      <template #features>
+        <vue-layer-marker :coordinates="[longitude, latitude]" />
+      </template>
+    </vue-layer-map>
+  </div>
 </template>
 
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
+    import FlyOut from "~/components/FlyOut.vue";
+    import DetailsPane from "~/components/DetailsPane.vue";
     import { eventBus } from "~/plugins/flespiConnector";
 
     export default Vue.extend({
         name: "IndexPage",
-        components: { VueLayerMarker },
+        components: { VueLayerMarker, FlyOut, DetailsPane },
         data () {
             return {
-                longitude: 0,
-                latitude: 0,
-                zoom: 6,
+                longitude: 4.3601,
+                latitude: 50.5,
+                zoom: 8,
                 client: this.$getPositionData()
             };
         },
@@ -42,16 +48,13 @@
 
 <style lang="scss">
     /*
-     * This works to make the map responsive,
-     * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
-     * But, I can't seem to get to get multiple layout working *just* yet.
-     *
-     * TODO : Export html & body styling to layout component
-     */
-    html,
-    body,
-    #__nuxt,
-    #__layout {
+    * This works to make the map responsive,
+    * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
+    * But, I can't seem to get to get multiple layout working *just* yet.
+    *
+    * TODO: Export html & body styling to layout component
+    */
+    html, body, #__nuxt, #__layout,.fullscreen {
         height: 100%;
         width: 100%;
     }
