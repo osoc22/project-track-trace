@@ -1,11 +1,12 @@
 <template>
   <div>
-    <vl-interaction-select @select="onSelect" />
+    <vl-interaction-select id="interact" @select="onSelect" @unselect="onDeselect" />
     <vl-feature id="position-feature">
       <vl-geom-point :coordinates="coordinates" />
       <vl-style>
         <vl-style-icon
-          :src="src"
+          id="marker"
+          :src="iconSrc"
           :scale="0.2"
           :anchor="[0.5, 1]"
         />
@@ -30,6 +31,16 @@ export default defineComponent({
         }
     },
     emits: ["popup-toggled"],
+    data () {
+      return {
+        iconSrc: this.src,
+        // TODO hardcoded details for now, should be replaced by actual useful data!
+        details: {
+          name: "Alpha 03",
+          id: "4527117"
+        }
+      };
+    },
     methods: {
       onSelect (e : any) {
         /*
@@ -38,7 +49,12 @@ export default defineComponent({
          */
         e.feature.getGeometry().transform("EPSG:3857", "EPSG:4326");
         const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
-        this.$root.$emit("popup-toggled", markerCoords);
+        this.$root.$emit("popup-toggled", markerCoords, this.details);
+        // re-transform to avoid disappearing markers
+        e.feature.getGeometry().transform("EPSG:4326", "EPSG:3857");
+      },
+      onDeselect () {
+        this.$root.$emit("popup-hide");
       }
     }
 });
