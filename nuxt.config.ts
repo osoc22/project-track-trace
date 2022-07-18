@@ -28,7 +28,8 @@ const config: NuxtConfig = {
 			src: "@/plugins/vueLayers.js",
 			ssr: false
 		},
-        "~/plugins/flespiConnector.ts"
+		"~/plugins/flespiConnector.ts",
+		"~/plugins/bootstrapVue.ts"
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -70,11 +71,12 @@ const config: NuxtConfig = {
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {
-		extend (config, ctx) {
+		extend(config, ctx) {
 			if (ctx.isDev) {
 				config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
 			}
-		}
+		},
+		transpile: ["bootstrap-vue"]
 	}
 };
 

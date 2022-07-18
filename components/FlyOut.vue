@@ -1,9 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import SearchTrackers from "./SearchTrackers.vue";
 
 export default defineComponent({
-    components: { SearchTrackers },
     props: {
         initOpen: {
             type: Boolean,
@@ -27,7 +25,7 @@ export default defineComponent({
     <b-sidebar id="flyout" bg-variant="dark" no-header shadow @hidden="open=false">
       <!-- because of no-header, we need an additional horizontal break-->
       <hr class="flyout-top">
-      <SearchTrackers />
+      <slot />
     </b-sidebar>
   </div>
 </template>
