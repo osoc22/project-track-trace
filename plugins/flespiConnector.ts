@@ -8,17 +8,20 @@ import { Inject } from "@nuxt/types/app";
  * Position interface to get position data from a tracker
  */
 export interface Position {
-    altitude: number,
-    direction: number,
-    hdop: number,
+    altitude?: number,
+    direction?: number,
+    hdop?: number,
     latitude: number,
     longitude: number,
-    pdop: number,
-    satellites: number,
-    speed: number,
-    valid: boolean
+    pdop?: number,
+    satellites?: number,
+    speed?: number,
+    valid?: boolean
 }
 
+/**
+ * A device connected to Flespi
+ */
 export interface Device {
     id: number,
     name: string
@@ -31,7 +34,7 @@ declare module "vue/types/vue" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $getPositionData(devices: Device[]): MqttClient
         $getDeviceList(): Promise<Device[]>
     }
 }
@@ -42,7 +45,7 @@ declare module "@nuxt/types" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $getPositionData(devices: Device[]): MqttClient
         $getDeviceList(): Promise<Device[]>
     }
     interface Context {
@@ -50,7 +53,7 @@ declare module "@nuxt/types" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $getPositionData(devices: Device[]): MqttClient
         $getDeviceList(): Promise<Device[]>
     }
 }
@@ -62,7 +65,7 @@ declare module "vuex/types/index" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $getPositionData(devices: Device[]): MqttClient
         $getDeviceList(): Promise<Device[]>
     }
 }
@@ -79,7 +82,9 @@ export const eventBus = new Vue(); // creating an event bus.
  *
  * @returns the connected client
  */
-function createClient (): MqttClient {
+function createClient (devices: Device[]): MqttClient | null {
+    if (devices.length === 0) { return null; }
+    console.log("createCilent");
     // Creating and connecting Flespi client
     const client: MqttClient = connect("wss://mqtt.flespi.io", {
         clientId: process.env.FLESPI_CLIENT_ID,
@@ -92,16 +97,16 @@ function createClient (): MqttClient {
     // Starting setup of the client
 
     // When the client is connected, we subscribe to the telemetry topic
-    client.on("connect", () => {
-        /*
-         * Subscribe to the telemetry topic
-         * Alfa 03 : flespi/state/gw/devices/4527117/telemetry/#
-         * Alfa 01 : flespi/state/gw/devices/4530445/telemetry/#
-         */
-        client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err: Error) => {
-            if (err) {
-                client.end(true); // force disconnect
-            }
+    /* client.on("connect", () => {
+        devices.forEach((device) => {
+            /!*
+             * client.subscribe("flespi/state/gw/devices/" + device.id + "/telemetry/#", { qos: 1 }, (err: Error) => {
+             *     if (err) {
+             *         client.end(true); // force disconnect
+             *     }
+             * });
+             *!/
+            console.log("testttt", device);
         });
     });
 
@@ -110,11 +115,13 @@ function createClient (): MqttClient {
         // topic as received is : flespi/state/gw/devices/4530445/telemetry/<informationName>
         const splitTopic: string[] = topic.split("/");
         const informationName: string = splitTopic[splitTopic.length - 1];
+        const deviceID: number = Number(splitTopic[splitTopic.length - 3]); // Get the device ID
 
         if (informationName === "position") {
-            emitNewCoordinates(convertToObject(msg.toString("utf8")));
+            // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
+            console.log("emit new coordinates");
         }
-    });
+    }); */
 
     return client;
 }
@@ -164,8 +171,8 @@ async function callAPI (): Promise<Device[]> {
  * Method plugin
  */
 const plugin: Plugin = (_context: Context, inject: Inject) => {
-    inject("getPositionData", () => {
-        return createClient();
+    inject("getPositionData", (devices: Device[]) => {
+        return createClient([]);
     });
     inject("getDeviceList", () => {
         return callAPI();

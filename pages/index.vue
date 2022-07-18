@@ -1,7 +1,7 @@
 <template>
   <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
     <template #features>
-      <vue-layer-marker :coordinates="[longitude, latitude]" />
+      <vue-layer-marker v-for="(value, key) in positions" :key="key" :coordinates="[value.longitude, value.latitude]" />
     </template>
   </vue-layer-map>
 </template>
@@ -9,7 +9,8 @@
 <script lang="ts">
     import Vue from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import { eventBus, Device } from "~/plugins/flespiConnector";
+    import { eventBus, Device, Position } from "~/plugins/flespiConnector";
+    import { connect } from "mqtt";
 
     export default Vue.extend({
         name: "IndexPage",
@@ -19,13 +20,21 @@
                 longitude: 0,
                 latitude: 0,
                 zoom: 6,
-                client: this.$getPositionData(),
-                devices: [] as Device[]
+                client: this.$getPositionData([]),
+                positions: new Map<Device, Position>()
             };
         },
         async fetch () {
             const devices = await this.$getDeviceList();
-            devices.forEach(device => this.devices.push(device));
+            devices.forEach(device => this.positions.set(device, { longitude: 0, latitude: 0 }));
+            // this.client = this.$getPositionData(devices);
+            this.client = connect("wss://mqtt.flespi.io", {
+            clientId: process.env.FLESPI_CLIENT_ID,
+                // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
+                username: "FlespiToken " + process.env.FLESPI_KEY,
+                protocolVersion: 5,
+                clean: true
+        });
         },
         created () {
             eventBus.$on("newCoordinates", (data: number[]) => {
