@@ -88,7 +88,7 @@ function createClient (): MqttClient {
          * Alfa 03 : flespi/state/gw/devices/4527117/telemetry/#
          * Alfa 01 : flespi/state/gw/devices/4530445/telemetry/#
          */
-        client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err: Error) => {
+        client.subscribe("flespi/state/gw/devices/4527117/telemetry/#", { qos: 1 }, (err: Error) => {
             if (err) {
                 client.end(true); // force disconnect
             }

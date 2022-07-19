@@ -8,6 +8,9 @@
             {{ item }}
           </p>
         </h6>
+        <button type="button" class="btn btn-link" @click="toggleDetails">
+          Details
+        </button>
       </div>
     </vl-overlay>
   </div>
@@ -50,18 +53,31 @@ export default defineComponent({
         this.display = false;
         this.pos = [0, 0];
       });
+    },
+    methods: {
+      toggleDetails () {
+        console.log("toggling details");
+      }
     }
 });
 </script>
 
 <style lang="scss" scoped>
     .overlay-content {
-        background: #efefef;
-        box-shadow: 0 5px 10px rgb(2 2 2 / 20%);
+        background: #fff;
+        box-shadow: 5px 5px 5px rgb(2 2 2 / 50%);
+        max-height: 150px;
+        max-width: 150px;
+        overflow: auto;
     }
 
     .lead{
         font-size: 16px;
         margin-bottom: 0;
+    }
+
+    .btn:focus,.btn:active{
+      outline: none;
+      box-shadow: none;
     }
 </style>

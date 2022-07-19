@@ -37,7 +37,11 @@ export default defineComponent({
         // TODO hardcoded details for now, should be replaced by actual useful data!
         details: {
           name: "Alpha 03",
-          id: "4527117"
+          id: "4527117",
+          attribute: "value",
+          hotel: "trivago",
+          long: "aaaaaaaaaaaaa",
+          longer: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         }
       };
     },
