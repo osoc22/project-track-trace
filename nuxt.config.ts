@@ -29,8 +29,7 @@ const config: NuxtConfig = {
 			ssr: false
 		},
 		"~/plugins/flespiConnector.ts",
-		"~/plugins/bootstrapVue.ts",
-		"~/plugins/flespiSender.ts"
+		"~/plugins/bootstrapVue.ts"
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
