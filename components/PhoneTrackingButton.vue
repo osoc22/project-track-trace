@@ -10,31 +10,31 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "PhoneTrackingButton",
-  data() {
+  data () {
     return {
       tracking: false,
       watcherId: -1,
-      client: this.$initiateClient(),
+      client: this.$initiateClient()
     };
   },
+  beforeDestroy () {
+    this.StopTracking();
+    this.client.end(true);
+  },
   methods: {
-    StartTracking() {
+    StartTracking () {
       this.tracking = true;
       console.log("Starting tracker...");
       this.watcherId = navigator.geolocation.watchPosition((result) => {
         this.$handleUpdatedPosition(this.client, result);
       });
     },
-    StopTracking() {
+    StopTracking () {
       this.tracking = false;
       console.log("Stopping tracker...");
       navigator.geolocation.clearWatch(this.watcherId);
       this.watcherId = -1;
-    },
-  },
-  beforeDestroy() {
-    this.StopTracking();
-    this.client.end(true);
-  },
+    }
+  }
 });
 </script>

@@ -1,3 +1,5 @@
+/* REMOVE THE LINE BELOW WHEN IT'S FULLY IMPLEMENTED */
+/* eslint-disable no-console */
 import { connect, MqttClient } from "mqtt";
 import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
@@ -96,7 +98,7 @@ export const eventBus = new Vue(); // creating an event bus.
 /**
  * Creating and connecting Flespi client
  */
-function createClient(): MqttClient {
+function createClient (): MqttClient {
     return connect("wss://mqtt.flespi.io", {
         clientId: generateRandomId(10),
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
@@ -111,7 +113,7 @@ function createClient(): MqttClient {
  *
  * @returns the connected client
  */
-function setupClient(client: MqttClient, channels: Channel[]): MqttClient {
+function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
         console.log(`Connected ${client.options.clientId}`);
@@ -129,37 +131,34 @@ function setupClient(client: MqttClient, channels: Channel[]): MqttClient {
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
         console.log(topic, msg.toString("utf8"));
-        /* const splitTopic: string[] = topic.split("/");
-        const informationName: string = splitTopic[splitTopic.length - 1];
-        const deviceID: number = Number(splitTopic[splitTopic.length - 3]); // Get the device ID
-
-        if (informationName === "position") {
-            // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
-            console.log("emit new coordinates");
-        } */
+        /*
+         * const splitTopic: string[] = topic.split("/");
+         * const informationName: string = splitTopic[splitTopic.length - 1];
+         * const deviceID: number = Number(splitTopic[splitTopic.length - 3]); // Get the device ID
+         *
+         * if (informationName === "position") {
+         *  // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
+         *  console.log("emit new coordinates");
+         * }
+         */
     });
 
     return client;
 }
 
 /**
- * Convert the position string to an actual object
- */
-function convertToObject(json: string): Position {
-    return JSON.parse(json);
-}
-
-/**
  * Emits the new coordinates to the parent component
  */
-function emitNewCoordinates(position: Position): void {
+// Done on request by Ben
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function emitNewCoordinates (position: Position): void {
     eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
 }
 
 /**
  * Calls Flespi API to get the list of all active channels
  */
-async function callAPI(): Promise<Channel[]> {
+async function callAPI (): Promise<Channel[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
     const channels: Channel[] = [];
@@ -183,7 +182,7 @@ async function callAPI(): Promise<Channel[]> {
     return channels;
 }
 
-function handleNewPosition(client: MqttClient, result: GeolocationPosition): void {
+function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
     const data = {
         ident: client.options.clientId || generateRandomId(10),
         timestamp: result.timestamp / 1000,
@@ -194,12 +193,12 @@ function handleNewPosition(client: MqttClient, result: GeolocationPosition): voi
     sendLocationData(client, data);
 }
 
-function sendLocationData(client: MqttClient, data: LocationData): void {
+function sendLocationData (client: MqttClient, data: LocationData): void {
     client.publish("paradar/smartphone", JSON.stringify(data), { qos: 0 });
 }
 
-function generateRandomId(length: number): string {
-    return '_' + Math.random().toString(36).substring(2, 2 + length);
+function generateRandomId (length: number): string {
+    return "_" + Math.random().toString(36).substring(2, 2 + length);
 }
 
 /**
@@ -209,7 +208,7 @@ const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", createClient);
     inject("getPositionData", setupClient);
     inject("getChannelList", callAPI);
-    inject("handleUpdatedPosition", handleNewPosition)
+    inject("handleUpdatedPosition", handleNewPosition);
 };
 
 export default plugin;

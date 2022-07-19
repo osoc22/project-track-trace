@@ -23,29 +23,29 @@ import { eventBus } from "~/plugins/flespiConnector";
 export default Vue.extend({
   name: "IndexPage",
   components: { VueLayerMarker, FlyOut, DetailsPane },
-  data() {
+  data () {
     return {
       longitude: 0,
       latitude: 0,
       zoom: 6,
-      client: this.$initiateClient(), // Initiate the client
+      client: this.$initiateClient() // Initiate the client
     };
   },
-  async fetch() {
+  async fetch () {
     // Gets the list of channels on which we will subscribe to get trackers data
     const channels = await this.$getChannelList();
     this.client = this.$getPositionData(this.client, channels); // Get the GPS data
   },
   fetchOnServer: false,
-  created() {
+  created () {
     eventBus.$on("newCoordinates", (data: number[]) => {
       this.longitude = data[0];
       this.latitude = data[1];
     });
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.client.end(true);
-  },
+  }
 });
 </script>
 
