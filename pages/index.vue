@@ -25,12 +25,25 @@
         components: { VueLayerMarker, FlyOut, DetailsPane },
         data () {
             return {
+<<<<<<< HEAD
                 longitude: 4.3601,
                 latitude: 50.5,
                 zoom: 8,
                 client: this.$getPositionData()
+=======
+                longitude: 0,
+                latitude: 0,
+                zoom: 6,
+                client: this.$initiateClient() // Initiate the client
+>>>>>>> 35-create-a-plugin-function-that-list-all-trackers-connected-to-flespi
             };
         },
+        async fetch () {
+            // Gets the list of channels on which we will subscribe to get trackers data
+            const channels = await this.$getChannelList();
+            this.client = this.$getPositionData(this.client, channels); // Get the GPS data
+        },
+        fetchOnServer: false,
         created () {
             eventBus.$on("newCoordinates", (data: number[]) => {
                 this.longitude = data[0];
