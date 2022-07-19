@@ -58,10 +58,11 @@ export interface LocationData {
 function setupClient(): (result: GeolocationPosition) => void {
     // Token used to connect to Flespi
     const token = process.env.FLESPI_KEY;
+    const device_id = generateRandomId(10);
 
     // Creating and connecting Flespi client
     const client: MqttClient = connect("wss://mqtt.flespi.io", {
-        clientId: "track-and-trace-2", // TODO: I think this should actually be randomly generated
+        clientId: device_id,
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
         username: "FlespiToken " + token,
         protocolVersion: 5,
@@ -74,7 +75,7 @@ function setupClient(): (result: GeolocationPosition) => void {
      */
     function handleNewPosition(result: GeolocationPosition): void {
         const data = {
-            ident: "smartphone-tracker", // TODO: this should defenitly be randomly generated
+            ident: device_id,
             timestamp: result.timestamp / 1000,
             "position.latitude": result.coords.latitude,
             "position.longitude": result.coords.longitude,
@@ -93,6 +94,10 @@ function setupClient(): (result: GeolocationPosition) => void {
  */
 function sendLocationData(client: MqttClient, data: LocationData): void {
     client.publish("paradar/smartphone", JSON.stringify(data), { qos: 0 });
+}
+
+function generateRandomId(length: number): string {
+    return '_' + Math.random().toString(36).substring(2, 2 + length);
 }
 
 /**
