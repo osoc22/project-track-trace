@@ -23,7 +23,7 @@ export default defineComponent({
         },
         src: {
             type: String,
-            default: "~/assets/images/marker.png"
+            default: "/marker.png"
         }
     }
 });
