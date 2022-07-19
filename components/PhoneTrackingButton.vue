@@ -14,16 +14,16 @@ export default Vue.extend({
     return {
       tracking: false,
       watcherId: -1,
-      locationHandler: this.$setupLocationHandler(),
+      client: this.$initiateClient(),
     };
   },
   methods: {
     StartTracking() {
       this.tracking = true;
       console.log("Starting tracker...");
-      this.watcherId = navigator.geolocation.watchPosition(
-        this.locationHandler
-      );
+      this.watcherId = navigator.geolocation.watchPosition((result) => {
+        this.$handleUpdatedPosition(this.client, result);
+      });
     },
     StopTracking() {
       this.tracking = false;
@@ -31,6 +31,10 @@ export default Vue.extend({
       navigator.geolocation.clearWatch(this.watcherId);
       this.watcherId = -1;
     },
+  },
+  beforeDestroy() {
+    this.StopTracking();
+    this.client.end(true);
   },
 });
 </script>

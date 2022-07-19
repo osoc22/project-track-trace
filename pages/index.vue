@@ -44,13 +44,7 @@ export default Vue.extend({
     });
   },
   beforeDestroy() {
-    this.client.on("close", () => {
-      this.client.end(true); // force disconnect
-    });
-
-    this.client.on("error", () => {
-      this.client.end(true); // force disconnect
-    });
+    this.client.end(true);
   },
 });
 </script>

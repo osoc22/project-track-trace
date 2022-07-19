@@ -19,6 +19,14 @@ export interface Position {
     valid?: boolean
 }
 
+export interface LocationData {
+    ident: string,
+    timestamp: number,
+    "position.longitude": number,
+    "position.latitude": number,
+    "position.altitude": number | null
+}
+
 /**
  * A device connected to Flespi
  */
@@ -37,6 +45,7 @@ declare module "vue/types/vue" {
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
         $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -49,6 +58,7 @@ declare module "@nuxt/types" {
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
         $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
     interface Context {
         /**
@@ -58,6 +68,7 @@ declare module "@nuxt/types" {
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
         $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -71,6 +82,7 @@ declare module "vuex/types/index" {
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
         $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -84,9 +96,9 @@ export const eventBus = new Vue(); // creating an event bus.
 /**
  * Creating and connecting Flespi client
  */
-function createClient (): MqttClient {
+function createClient(): MqttClient {
     return connect("wss://mqtt.flespi.io", {
-        clientId: process.env.FLESPI_CLIENT_ID,
+        clientId: generateRandomId(10),
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
         username: "FlespiToken " + process.env.FLESPI_KEY,
         protocolVersion: 5,
@@ -99,24 +111,23 @@ function createClient (): MqttClient {
  *
  * @returns the connected client
  */
-function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
+function setupClient(client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
+        console.log(`Connected ${client.options.clientId}`);
         channels.forEach((channel: Channel) => {
-             //client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
-             client.subscribe("flespi/message/gw/channels/1134425/+", { qos: 1 }, (err: Error) => {
-                 console.log(err);
-                 if (err) {
-                     console.log("testttt");
-                     client.end(true); // force disconnect
-                 }
-             });
+            client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
+                if (err) {
+                    console.log("testttt");
+                    client.end(true); // force disconnect
+                }
+                console.log(`Subscribed to channel ${channel.id}`);
+            });
         });
     });
 
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
-        console.log("test");
         console.log(topic, msg.toString("utf8"));
         /* const splitTopic: string[] = topic.split("/");
         const informationName: string = splitTopic[splitTopic.length - 1];
@@ -134,29 +145,29 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 /**
  * Convert the position string to an actual object
  */
-function convertToObject (json: string): Position {
+function convertToObject(json: string): Position {
     return JSON.parse(json);
 }
 
 /**
  * Emits the new coordinates to the parent component
  */
-function emitNewCoordinates (position: Position): void {
+function emitNewCoordinates(position: Position): void {
     eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
 }
 
 /**
  * Calls Flespi API to get the list of all active channels
  */
-async function callAPI (): Promise<Channel[]> {
+async function callAPI(): Promise<Channel[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
     const channels: Channel[] = [];
 
     // Get the data via the API
     const pendingResponse = await fetch(
-    "https://flespi.io/gw/channels/all",
-    {
+        "https://flespi.io/gw/channels/all",
+        {
             headers: {
                 Authorization: token
             }
@@ -172,19 +183,33 @@ async function callAPI (): Promise<Channel[]> {
     return channels;
 }
 
+function handleNewPosition(client: MqttClient, result: GeolocationPosition): void {
+    const data = {
+        ident: client.options.clientId || generateRandomId(10),
+        timestamp: result.timestamp / 1000,
+        "position.latitude": result.coords.latitude,
+        "position.longitude": result.coords.longitude,
+        "position.altitude": result.coords.altitude
+    };
+    sendLocationData(client, data);
+}
+
+function sendLocationData(client: MqttClient, data: LocationData): void {
+    client.publish("paradar/smartphone", JSON.stringify(data), { qos: 0 });
+}
+
+function generateRandomId(length: number): string {
+    return '_' + Math.random().toString(36).substring(2, 2 + length);
+}
+
 /**
  * Method plugin
  */
 const plugin: Plugin = (_context: Context, inject: Inject) => {
-    inject("initiateClient", () => {
-        return createClient();
-    });
-    inject("getPositionData", (client: MqttClient, channels: Channel[]) => {
-        return setupClient(client, channels);
-    });
-    inject("getChannelList", () => {
-        return callAPI();
-    });
+    inject("initiateClient", createClient);
+    inject("getPositionData", setupClient);
+    inject("getChannelList", callAPI);
+    inject("handleUpdatedPosition", handleNewPosition)
 };
 
 export default plugin;
