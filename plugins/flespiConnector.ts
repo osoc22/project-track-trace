@@ -1,15 +1,53 @@
+/* REMOVE THE LINE BELOW WHEN IT'S FULLY IMPLEMENTED */
+/* eslint-disable no-console */
 import { connect, MqttClient } from "mqtt";
 import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
 import { Inject } from "@nuxt/types/app";
 
+/// Models
+/**
+ * Position interface to get position data from a tracker
+ */
+export interface Position {
+    altitude?: number,
+    direction?: number,
+    hdop?: number,
+    latitude: number,
+    longitude: number,
+    pdop?: number,
+    satellites?: number,
+    speed?: number,
+    valid?: boolean
+}
+
+export interface LocationData {
+    ident: string,
+    timestamp: number,
+    "position.longitude": number,
+    "position.latitude": number,
+    "position.altitude": number | null
+}
+
+/**
+ * A device connected to Flespi
+ */
+export interface Channel {
+    id: number,
+    name: string
+}
+
+/// Modules declaration
 declare module "vue/types/vue" {
     interface Vue {
         /**
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -19,14 +57,20 @@ declare module "@nuxt/types" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
     interface Context {
         /**
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -37,28 +81,31 @@ declare module "vuex/types/index" {
          * Connects to Flespi client and fetch position data.
          * @returns The mqtt client connected to Flespi
          */
-        $getPositionData(): MqttClient
+        $initiateClient(): MqttClient
+        $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
+        $getChannelList(): Promise<Channel[]>
+        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
+/// Event buses
 /**
  * EventBus to transmit data to component.
  */
 export const eventBus = new Vue(); // creating an event bus.
 
+/// Methods
 /**
- * Position interface to get position data from a tracker
+ * Creating and connecting Flespi client
  */
-export interface Position {
-    altitude: number,
-    direction: number,
-    hdop: number,
-    latitude: number,
-    longitude: number,
-    pdop: number,
-    satellites: number,
-    speed: number,
-    valid: boolean
+function createClient (): MqttClient {
+    return connect("wss://mqtt.flespi.io", {
+        clientId: generateRandomId(10),
+        // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
+        username: "FlespiToken " + process.env.FLESPI_KEY,
+        protocolVersion: 5,
+        clean: true
+    });
 }
 
 /**
@@ -66,70 +113,102 @@ export interface Position {
  *
  * @returns the connected client
  */
-function createClient (): MqttClient {
-    // Token used to connect to Flespi
-    const token = process.env.FLESPI_KEY;
-
-    // Creating and connecting Flespi client
-    const client: MqttClient = connect("wss://mqtt.flespi.io", {
-        clientId: process.env.FLESPI_CLIENT_ID,
-        // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
-        username: "FlespiToken " + token,
-        protocolVersion: 5,
-        clean: true
-    });
-
-    // Starting setup of the client
-
+function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
-        /*
-         * Subscribe to the telemetry topic
-         * Alfa 03 : flespi/state/gw/devices/4527117/telemetry/#
-         * Alfa 01 : flespi/state/gw/devices/4530445/telemetry/#
-         */
-        client.subscribe("flespi/state/gw/devices/4530445/telemetry/#", { qos: 1 }, (err: Error) => {
-            if (err) {
-                client.end(true); // force disconnect
-            }
+        console.log(`Connected ${client.options.clientId}`);
+        channels.forEach((channel: Channel) => {
+            client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
+                if (err) {
+                    console.log("testttt");
+                    client.end(true); // force disconnect
+                }
+                console.log(`Subscribed to channel ${channel.id}`);
+            });
         });
     });
 
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
-        // topic as received is : flespi/state/gw/devices/4530445/telemetry/<informationName>
-        const splitTopic: string[] = topic.split("/");
-        const informationName: string = splitTopic[splitTopic.length - 1];
-
-        if (informationName === "position") {
-            emitNewCoordinates(convertToObject(msg.toString("utf8")));
-        }
+        console.log(topic, msg.toString("utf8"));
+        /*
+         * const splitTopic: string[] = topic.split("/");
+         * const informationName: string = splitTopic[splitTopic.length - 1];
+         * const deviceID: number = Number(splitTopic[splitTopic.length - 3]); // Get the device ID
+         *
+         * if (informationName === "position") {
+         *  // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
+         *  console.log("emit new coordinates");
+         * }
+         */
     });
 
     return client;
 }
 
 /**
- * Convert the position string to an actual object
- */
-function convertToObject (json: string): Position {
-    return JSON.parse(json);
-}
-
-/**
  * Emits the new coordinates to the parent component
  */
+// Done on request by Ben
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function emitNewCoordinates (position: Position): void {
     eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
 }
 
 /**
- * Mqtt method plugin
+ * Calls Flespi API to get the list of all active channels
  */
-const mqttPlugin: Plugin = (_context: Context, inject: Inject) => {
-    inject("getPositionData", () => {
-        return createClient();
-    });
+async function callAPI (): Promise<Channel[]> {
+    // Token needed to authenticate in Flespi
+    const token: string = "FlespiToken " + process.env.FLESPI_KEY;
+    const channels: Channel[] = [];
+
+    // Get the data via the API
+    const pendingResponse = await fetch(
+        "https://flespi.io/gw/channels/all",
+        {
+            headers: {
+                Authorization: token
+            }
+        }
+    );
+
+    const json = await pendingResponse.json();
+
+    for (let i = 0; i < json.result.length; i++) {
+        channels.push(json.result[i]);
+    }
+
+    return channels;
+}
+
+function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
+    const data = {
+        ident: client.options.clientId || generateRandomId(10),
+        timestamp: result.timestamp / 1000,
+        "position.latitude": result.coords.latitude,
+        "position.longitude": result.coords.longitude,
+        "position.altitude": result.coords.altitude
+    };
+    sendLocationData(client, data);
+}
+
+function sendLocationData (client: MqttClient, data: LocationData): void {
+    client.publish("paradar/smartphone", JSON.stringify(data), { qos: 0 });
+}
+
+function generateRandomId (length: number): string {
+    return "_" + Math.random().toString(36).substring(2, 2 + length);
+}
+
+/**
+ * Method plugin
+ */
+const plugin: Plugin = (_context: Context, inject: Inject) => {
+    inject("initiateClient", createClient);
+    inject("getPositionData", setupClient);
+    inject("getChannelList", callAPI);
+    inject("handleUpdatedPosition", handleNewPosition);
 };
 
-export default mqttPlugin;
+export default plugin;
