@@ -22,12 +22,12 @@
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
+    import { defineComponent } from "vue";
     import VueLayerMarker from "~/components/VueLayerMarker.vue";
     import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
     import { eventBus } from "~/plugins/flespiConnector";
 
-    export default Vue.extend({
+    export default defineComponent({
         name: "IndexPage",
         components: { VueLayerMarker, DualFlyOut },
         data () {
