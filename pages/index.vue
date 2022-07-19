@@ -1,7 +1,7 @@
 <template>
   <div class="fullscreen">
     <fly-out>
-      <phone-tracking-button />
+      <phone-tracking-button :client="client" />
       <SearchTrackers />
     </fly-out>
     <DetailsPane />
@@ -25,8 +25,8 @@ export default Vue.extend({
   components: { VueLayerMarker, FlyOut, DetailsPane },
   data() {
     return {
-      longitude: 0,
-      latitude: 0,
+      longitude: 4,
+      latitude: 51,
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
     };

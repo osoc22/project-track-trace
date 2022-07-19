@@ -7,14 +7,20 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { MqttClient } from "mqtt";
 
 export default Vue.extend({
   name: "PhoneTrackingButton",
+  props: {
+    client: {
+      type: MqttClient,
+      required: true,
+    },
+  },
   data() {
     return {
       tracking: false,
       watcherId: -1,
-      client: this.$initiateClient(),
     };
   },
   methods: {
