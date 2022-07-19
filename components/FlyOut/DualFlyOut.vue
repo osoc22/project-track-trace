@@ -21,7 +21,7 @@ export default defineComponent({
       };
   },
   mounted () {
-    this.windowWidth = window.innerHeight;
+    this.windowWidth = window.innerWidth;
     window.addEventListener("resize", this.onResize);
   },
   methods: {
