@@ -16,7 +16,8 @@ export interface Position {
     pdop?: number,
     satellites?: number,
     speed?: number,
-    valid?: boolean
+    valid?: boolean,
+    timestamp?: number
 }
 
 export interface LocationData {
@@ -145,7 +146,8 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
         const data = JSON.parse(msg.toString("utf-8"));
         emitNewCoordinates(locationId, {
             latitude: data["position.latitude"],
-            longitude: data["position.longitude"]
+            longitude: data["position.longitude"],
+            timestamp: data.timestamp
         });
     });
 
