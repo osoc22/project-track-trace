@@ -32,7 +32,8 @@ import { eventBus } from "~/plugins/flespiConnector";
 interface PositionData {
   id: string,
   latitude: number,
-  longitude: number
+  longitude: number,
+  timestamp: number
 }
 
 export default Vue.extend({
@@ -46,11 +47,13 @@ export default Vue.extend({
         center: [4.3572, 50.8476]
     };
   },
-  async fetch () {
-    // Gets the list of channels on which we will subscribe to get trackers data
-    const channels = await this.$getChannelList();
-    this.client = this.$getPositionData(this.client, channels); // Get the GPS data
-  },
+  /*
+   * async fetch () {
+   *  // Gets the list of channels on which we will subscribe to get trackers data
+   *  const channels = await this.$getChannelList();
+   *  this.client = this.$getPositionData(this.client, channels); // Get the GPS data
+   * },
+   */
   fetchOnServer: false,
   created () {
     eventBus.$on("newCoordinates", (data: PositionData) => {
@@ -61,6 +64,13 @@ export default Vue.extend({
         this.positions.push(data);
       }
     });
+    setInterval(() => {
+      this.positions.forEach((position, index) => {
+        if (Math.abs(position.timestamp - Date.now() / 1000) >= 60) {
+          this.positions.splice(index, 1);
+        }
+      });
+    }, 60000);
   },
   beforeDestroy () {
     this.client.end(true);
