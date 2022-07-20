@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { PropType } from "vue/types/v3-component-props";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import FlyOut from "~/components/FlyOut.vue";
 import DetailsPane from "~/components/DetailsPane.vue";
@@ -46,14 +45,12 @@ export default Vue.extend({
   fetchOnServer: false,
   created () {
     eventBus.$on("newCoordinates", (data: PositionData) => {
-        console.log(data);
       const currentData = this.positions.filter(pos => pos.id === data.id);
       if (currentData.length > 0) {
         this.positions[this.positions.indexOf(currentData[0])] = data;
       } else {
         this.positions.push(data);
       }
-      console.log(this.positions);
     });
   },
   beforeDestroy () {

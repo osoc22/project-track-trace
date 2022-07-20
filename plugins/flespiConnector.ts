@@ -114,7 +114,6 @@ function createClient (): MqttClient {
 function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
-        console.log("Connected...");
         channels.forEach((channel: Channel) => {
             client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
                 if (err) {
@@ -126,7 +125,6 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
-        console.log("message");
         const splitTopic: string[] = topic.split("/");
         const locationId: string = splitTopic[splitTopic.length - 1];
         const data = JSON.parse(msg.toString("utf-8"));
