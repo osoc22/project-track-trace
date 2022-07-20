@@ -1,5 +1,5 @@
 <template>
-  <b-button @click="(tracking) ? StopTracking() : StartTracking()">
+  <b-button @click="tracking ? StopTracking() : StartTracking()">
     <b-icon-pin-map />
     <p>{{ tracking ? "Stop Tracking" : "Track me!" }}</p>
   </b-button>
@@ -10,21 +10,32 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { MqttClient } from "mqtt";
 
 export default Vue.extend({
   name: "PhoneTrackingButton",
+  props: {
+    client: {
+      type: MqttClient,
+      required: true
+    }
+  },
   data () {
     return {
       tracking: false,
       watcherId: -1
     };
   },
+  beforeDestroy () {
+    this.StopTracking();
+    this.client.end(true);
+  },
   methods: {
     StartTracking () {
         this.tracking = true;
-        // Remove the line before when you're implementing this
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.watcherId = navigator.geolocation.watchPosition((result) => { /* Write your function here */ });
+        this.watcherId = navigator.geolocation.watchPosition((result) => {
+            this.$handleUpdatedPosition(this.client, result);
+        });
         this.$bvToast.toast("You are being tracked.", {
             title: "Paradar message",
             autoHideDelay: 3000,
