@@ -24,6 +24,10 @@ export default defineComponent({
         src: {
             type: String,
             default: "/marker.png"
+        },
+        scale: {
+          type: Number,
+          default: 0.2
         }
     }
 });

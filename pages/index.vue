@@ -19,7 +19,8 @@
           v-for="pos in positions"
           :key="pos.id"
           :coordinates="[pos.longitude, pos.latitude]"
-          :src="pos.id.includes('sp_') ? '/sm_marker.png' : '/teltonika_marker.png'"
+          :src="pos.id.includes('sp_') ? '/sp_marker.png' : '/teltonika_marker.png'"
+          :scale="pos.id.includes('sp_') ? 0.05 : 0.05"
         />
       </template>
     </vue-layer-map>
