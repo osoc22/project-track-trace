@@ -15,7 +15,12 @@
     </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
-        <vue-layer-marker v-for="pos in positions" :key="pos.id" :coordinates="[pos.longitude, pos.latitude]" />
+        <vue-layer-marker
+          v-for="pos in positions"
+          :key="pos.id"
+          :coordinates="[pos.longitude, pos.latitude]"
+          :src="pos.id.includes('sp_') ? '/sm_marker.png' : '/teltonika_marker.png'"
+        />
       </template>
     </vue-layer-map>
   </div>
