@@ -5,9 +5,9 @@
       <SearchTrackers />
     </fly-out>
     <DetailsPane />
-    <vue-layer-map :initial-zoom="zoom" :initial-center="[longitude, latitude]">
+    <vue-layer-map :initial-zoom="zoom" :initial-center="[4, 51]">
       <template #features>
-        <vue-layer-marker :coordinates="[longitude, latitude]" />
+        <vue-layer-marker v-for="position in positions" :key="position.id" :coordinates="[position.longitude, position.latitude]" />
       </template>
     </vue-layer-map>
   </div>
@@ -21,7 +21,7 @@ import DetailsPane from "~/components/DetailsPane.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 
 interface PositionData {
-  trackerId: string,
+  id: string,
   latitude: number,
   longitude: number
 }
@@ -31,7 +31,7 @@ export default Vue.extend({
   components: { VueLayerMarker, FlyOut, DetailsPane },
   data () {
     return {
-      positions: [],
+      positions: [] as Array<PositionData>,
       zoom: 6,
       client: this.$initiateClient() // Initiate the client
     };
@@ -44,7 +44,13 @@ export default Vue.extend({
   fetchOnServer: false,
   created () {
     eventBus.$on("newCoordinates", (data: PositionData) => {
-      // Handle data is received
+      const currentData = this.positions.filter(pos => pos.id === data.id);
+      if (currentData.length > 0) {
+        this.positions[this.positions.indexOf(currentData[0])] = data;
+      } else {
+        this.positions.push(data);
+      }
+      console.log(this.positions);
     });
   },
   beforeDestroy () {
