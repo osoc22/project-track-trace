@@ -20,6 +20,9 @@ export default defineComponent({
           windowWidth: 0
       };
   },
+  beforeDestroy () {
+    window.removeEventListener("resize", this.onResize);
+  },
   mounted () {
     this.windowWidth = window.innerWidth;
     window.addEventListener("resize", this.onResize);
