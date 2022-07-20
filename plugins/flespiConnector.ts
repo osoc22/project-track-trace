@@ -126,6 +126,7 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
+        console.log("message");
         const splitTopic: string[] = topic.split("/");
         const locationId: string = splitTopic[splitTopic.length - 1];
         const data = JSON.parse(msg.toString("utf-8"));

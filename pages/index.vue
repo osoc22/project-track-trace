@@ -32,11 +32,7 @@ export default Vue.extend({
   components: { VueLayerMarker, FlyOut, DetailsPane },
   data () {
     return {
-      //positions: [] as Array<PositionData>,
-      positions: [
-          { id: "BXL001", latitude: 50.8476, longitude: 4.3572 },
-          { id: "ANT001", latitude: 51.2213, longitude: 4.4051 },
-          { id: "TURN001", latitude: 51.3217, longitude: 4.9376 }],
+      positions: [] as Array<PositionData>,
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
         center: [4.3572, 50.8476]
@@ -49,7 +45,9 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   created () {
+      window.
     eventBus.$on("newCoordinates", (data: PositionData) => {
+        console.log(data);
       const currentData = this.positions.filter(pos => pos.id === data.id);
       if (currentData.length > 0) {
         this.positions[this.positions.indexOf(currentData[0])] = data;
