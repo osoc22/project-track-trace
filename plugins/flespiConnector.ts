@@ -140,8 +140,8 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 /**
  * Emits the new coordinates to the parent component
  */
-function emitNewCoordinates (locationId: string, position: Position): void {
-    eventBus.$emit("newCoordinates", { locationId, ...position });
+function emitNewCoordinates (id: string, position: Position): void {
+    eventBus.$emit("newCoordinates", { id, ...position });
 }
 
 /**

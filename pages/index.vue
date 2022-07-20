@@ -20,13 +20,18 @@ import FlyOut from "~/components/FlyOut.vue";
 import DetailsPane from "~/components/DetailsPane.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 
+interface PositionData {
+  trackerId: string,
+  latitude: number,
+  longitude: number
+}
+
 export default Vue.extend({
   name: "IndexPage",
   components: { VueLayerMarker, FlyOut, DetailsPane },
   data () {
     return {
-      longitude: 4,
-      latitude: 51,
+      positions: [],
       zoom: 6,
       client: this.$initiateClient() // Initiate the client
     };
@@ -38,8 +43,8 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   created () {
-    eventBus.$on("newCoordinates", (data: any) => {
-      console.log(data);
+    eventBus.$on("newCoordinates", (data: PositionData) => {
+      // Handle data is received
     });
   },
   beforeDestroy () {
