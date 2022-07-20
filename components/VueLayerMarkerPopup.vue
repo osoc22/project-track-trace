@@ -66,7 +66,7 @@ export default defineComponent({
     .overlay-content {
         background: #fff;
         box-shadow: 5px 5px 5px rgb(2 2 2 / 50%);
-        max-height: 150px;
+        max-height: 200px;
         max-width: 150px;
         overflow: auto;
     }
