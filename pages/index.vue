@@ -3,7 +3,7 @@
     <dual-fly-out class="menu">
       <template #primary>
         <div class="d-flex flex-column align-items-start container">
-          <phone-tracking-button class="my-1 w-100" />
+          <phone-tracking-button class="my-1 w-100" :client="client" />
           <fly-out-button v-b-toggle.secondary-panel />
         </div>
       </template>
@@ -22,50 +22,54 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent } from "vue";
-    import VueLayerMarker from "~/components/VueLayerMarker.vue";
-    import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
-    import { eventBus } from "~/plugins/flespiConnector";
+import Vue from "vue";
+import VueLayerMarker from "~/components/VueLayerMarker.vue";
+import DualFlyOut from "~/components/DualFlyOut.vue";
+import { eventBus } from "~/plugins/flespiConnector";
 
-    export default defineComponent({
-        name: "IndexPage",
-        components: { VueLayerMarker, DualFlyOut },
-        data () {
-            return {
-                longitude: 4.3601,
-                latitude: 50.5,
-                zoom: 8,
-                client: this.$getPositionData()
-            };
-        },
-        created () {
-            eventBus.$on("newCoordinates", (data: number[]) => {
-                this.longitude = data[0];
-                this.latitude = data[1];
-            });
-        },
-        beforeDestroy () {
-            this.client.on("close", () => {
-                this.client.end(true); // force disconnect
-            });
-
-            this.client.on("error", () => {
-                this.client.end(true); // force disconnect
-            });
-        }
+export default Vue.extend({
+  name: "IndexPage",
+  components: { VueLayerMarker, DualFlyOut },
+  data () {
+    return {
+      longitude: 4,
+      latitude: 51,
+      zoom: 6,
+      client: this.$initiateClient() // Initiate the client
+    };
+  },
+  async fetch () {
+    // Gets the list of channels on which we will subscribe to get trackers data
+    const channels = await this.$getChannelList();
+    this.client = this.$getPositionData(this.client, channels); // Get the GPS data
+  },
+  fetchOnServer: false,
+  created () {
+    eventBus.$on("newCoordinates", (data: number[]) => {
+      this.longitude = data[0];
+      this.latitude = data[1];
     });
+  },
+  beforeDestroy () {
+    this.client.end(true);
+  }
+});
 </script>
 
 <style lang="scss">
-    /*
+/*
     * This works to make the map responsive,
     * but this might be best to port this to the layout folder (https://nuxtjs.org/docs/concepts/views#custom-layout)
     * But, I can't seem to get to get multiple layout working *just* yet.
     *
     * TODO: Export html & body styling to layout component
     */
-    html, body, #__nuxt, #__layout,.fullscreen {
-        height: 100%;
-        width: 100%;
-    }
+html,
+body,
+#__nuxt,
+#__layout,
+.fullscreen {
+  height: 100%;
+  width: 100%;
+}
 </style>
