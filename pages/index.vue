@@ -15,7 +15,7 @@
     </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
-        <vue-layer-marker v-for="pos in positions" :key="pos.id" :coordinates="[pos.longitude, pos.latitude]" />
+        <vue-layer-marker v-for="pos in positions" :key="pos.id" :coordinates="[pos.longitude, pos.latitude]" :details="pos" />
         <VueLayerMarkerPopup />
       </template>
     </vue-layer-map>
@@ -40,7 +40,7 @@ export default Vue.extend({
   components: { VueLayerMarker, DualFlyOut, VueLayerMarkerPopup },
   data () {
     return {
-      positions: [] as Array<PositionData>,
+      positions: [{ id: "test", latitude: 50, longitude: 4 }, { id: "test2", latitude: 50.5, longitude: 4.1 }] as Array<PositionData>,
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
         center: [4.3572, 50.8476]

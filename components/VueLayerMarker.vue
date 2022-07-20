@@ -28,21 +28,17 @@ export default defineComponent({
         src: {
             type: String,
             default: "/marker.png"
+        },
+        details: {
+          type: Object,
+          required: true
         }
     },
     emits: ["popup-toggled"],
     data () {
       return {
         iconSrc: this.src,
-        // TODO hardcoded details for now, should be replaced by actual useful data!
-        details: {
-          name: "Alpha 03",
-          id: "4527117",
-          attribute: "value",
-          hotel: "trivago",
-          long: "aaaaaaaaaaaaa",
-          longer: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        }
+        displayDetails: this.details
       };
     },
     methods: {
@@ -53,7 +49,8 @@ export default defineComponent({
          */
         e.feature.getGeometry().transform("EPSG:3857", "EPSG:4326");
         const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
-        this.$root.$emit("popup-toggled", markerCoords, this.details);
+        this.$root.$emit("popup-toggled", markerCoords, this.displayDetails);
+        console.log(this.displayDetails);
         // re-transform to avoid disappearing markers
         e.feature.getGeometry().transform("EPSG:4326", "EPSG:3857");
       },
