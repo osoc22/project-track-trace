@@ -32,14 +32,12 @@ export default Vue.extend({
   methods: {
     StartTracking () {
       this.tracking = true;
-      console.log("Starting tracker...");
       this.watcherId = navigator.geolocation.watchPosition((result) => {
         this.$handleUpdatedPosition(this.client, result);
       });
     },
     StopTracking () {
       this.tracking = false;
-      console.log("Stopping tracker...");
       navigator.geolocation.clearWatch(this.watcherId);
       this.watcherId = -1;
     }

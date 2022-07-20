@@ -1,5 +1,3 @@
-/* REMOVE THE LINE BELOW WHEN IT'S FULLY IMPLEMENTED */
-/* eslint-disable no-console */
 import { connect, MqttClient } from "mqtt";
 import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
@@ -116,31 +114,29 @@ function createClient (): MqttClient {
 function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
-        console.log(`Connected ${client.options.clientId}`);
         channels.forEach((channel: Channel) => {
             client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
                 if (err) {
-                    console.log("testttt");
                     client.end(true); // force disconnect
                 }
-                console.log(`Subscribed to channel ${channel.id}`);
             });
         });
     });
 
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (topic: string, msg: Buffer) => {
-        console.log(topic, msg.toString("utf8"));
-        /*
-         * const splitTopic: string[] = topic.split("/");
-         * const informationName: string = splitTopic[splitTopic.length - 1];
-         * const deviceID: number = Number(splitTopic[splitTopic.length - 3]); // Get the device ID
-         *
-         * if (informationName === "position") {
-         *  // emitNewCoordinates(convertToObject(msg.toString("utf8"))); // Emit the new position
-         *  console.log("emit new coordinates");
-         * }
-         */
+        const splitTopic: string[] = topic.split("/");
+        const locationId: string = splitTopic[splitTopic.length - 1];
+        const data = JSON.parse(msg.toString("utf-8"));
+        emitNewCoordinates(locationId, {
+            latitude: data["position.latitude"],
+            longitude: data["position.longitude"]
+        });
+    });
+
+    client.on("error", (error) => {
+        console.error(error);
+        client.end(true);
     });
 
     return client;
@@ -149,10 +145,8 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 /**
  * Emits the new coordinates to the parent component
  */
-// Done on request by Ben
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function emitNewCoordinates (position: Position): void {
-    eventBus.$emit("newCoordinates", [position.longitude, position.latitude]);
+function emitNewCoordinates (id: string, position: Position): void {
+    eventBus.$emit("newCoordinates", { id, ...position });
 }
 
 /**
