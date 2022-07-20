@@ -57,7 +57,10 @@ export default defineComponent({
          * We blame this behaviour on VueLayers being quirky.
          */
         const f = e.feature.getProperties();
-        const details = { id: f.id, longitude: f.longitude, latitude: f.latitude };
+        // convert timestamp to readable format
+        const timestamp : Date = new Date(f.timestamp * 1000);
+        const tsString : string = timestamp.toLocaleString();
+        const details = { id: f.id, longitude: f.longitude, latitude: f.latitude, timestamp: tsString };
         this.$root.$emit("popup-toggled", markerCoords, details);
         /*
          * console.log(this.displayDetails, this.details, this.coordinates);

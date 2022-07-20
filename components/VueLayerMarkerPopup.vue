@@ -1,6 +1,6 @@
 <template>
   <div v-if="display">
-    <vl-overlay :position="pos">
+    <vl-overlay :position="position">
       <div class="overlay-content">
         <h6 v-for="(item, index) in details" :key="index" class="ml-2 mr-2">
           {{ index }}
@@ -22,7 +22,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
     name: "VueLayerMarkerPopup",
     props: {
-        initPos: {
+        initPosition: {
             type: Array,
             default: () => [0, 0]
         },
@@ -39,19 +39,19 @@ export default defineComponent({
         return {
             display: this.initDisplay,
             // WARNING: this position is regular long/lat (°N °E) BE SURE TO CONVERT
-            pos: this.initPos,
+            position: this.initPosition,
             details: this.initDetails
         };
     },
     mounted () {
         this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object) => {
             this.display = true;
-            this.pos = coordinates;
+            this.position = coordinates;
             this.details = details;
       });
       this.$root.$on("popup-hide", () => {
         this.display = false;
-        this.pos = [0, 0];
+        this.position = [0, 0];
       });
     },
     methods: {
