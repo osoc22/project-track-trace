@@ -30,7 +30,8 @@ import { eventBus } from "~/plugins/flespiConnector";
 interface PositionData {
   id: string,
   latitude: number,
-  longitude: number
+  longitude: number,
+  timestamp: number
 }
 
 export default Vue.extend({
@@ -61,6 +62,13 @@ export default Vue.extend({
         this.positions.push(data);
       }
     });
+    setInterval(() => {
+      this.positions.forEach((position, index) => {
+        if (Math.abs(position.timestamp - Date.now() / 1000) >= 60) {
+          this.positions.splice(index, 1);
+        }
+      });
+    }, 60000);
   },
   beforeDestroy () {
     this.client.end(true);
