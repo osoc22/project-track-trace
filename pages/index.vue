@@ -38,9 +38,8 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   created () {
-    eventBus.$on("newCoordinates", (data: number[]) => {
-      this.longitude = data[0];
-      this.latitude = data[1];
+    eventBus.$on("newCoordinates", (data: any) => {
+      console.log(data);
     });
   },
   beforeDestroy () {
