@@ -139,10 +139,6 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
         client.end(true);
     });
 
-    client.on("close", () => {
-        client.end(true);
-    });
-
     return client;
 }
 
