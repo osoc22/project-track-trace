@@ -45,7 +45,6 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   created () {
-      window.
     eventBus.$on("newCoordinates", (data: PositionData) => {
         console.log(data);
       const currentData = this.positions.filter(pos => pos.id === data.id);
