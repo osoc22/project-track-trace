@@ -1,10 +1,18 @@
 <template>
   <div class="fullscreen">
-    <fly-out>
-      <phone-tracking-button :client="client" />
-      <SearchTrackers />
-    </fly-out>
-    <DetailsPane />
+    <dual-fly-out class="menu">
+      <template #primary>
+        <div class="d-flex flex-column align-items-start container">
+          <phone-tracking-button class="my-1 w-100" :client="client" />
+          <fly-out-button v-b-toggle.secondary-panel />
+        </div>
+      </template>
+      <template #secondary>
+        <div class="d-flex flex-column align-items-end container">
+          <p>test</p>
+        </div>
+      </template>
+    </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
         <vue-layer-marker v-for="pos in positions" :key="pos.id" :coordinates="[pos.longitude, pos.latitude]" />
@@ -16,8 +24,7 @@
 <script lang="ts">
 import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
-import FlyOut from "~/components/FlyOut.vue";
-import DetailsPane from "~/components/DetailsPane.vue";
+import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 
 interface PositionData {
@@ -28,7 +35,7 @@ interface PositionData {
 
 export default Vue.extend({
   name: "IndexPage",
-  components: { VueLayerMarker, FlyOut, DetailsPane },
+  components: { VueLayerMarker, DualFlyOut },
   data () {
     return {
       positions: [] as Array<PositionData>,

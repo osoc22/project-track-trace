@@ -1,5 +1,5 @@
 <template>
-  <b-button @click="tracking ? StopTracking() : StartTracking()">
+  <b-button class="d-flex justify-content-center" @click="(tracking) ? StopTracking() : StartTracking()">
     <b-icon-pin-map />
     <p>{{ tracking ? "Stop Tracking" : "Track me!" }}</p>
   </b-button>
@@ -9,10 +9,10 @@
 <script src="toastr.js"/>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { MqttClient } from "mqtt";
 
-export default Vue.extend({
+export default defineComponent({
   name: "PhoneTrackingButton",
   props: {
     client: {
@@ -59,3 +59,16 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.btn {
+    width: fit-content;
+    display: flex;
+    flex-flow: row nowrap;
+    min-width: max-content;
+    gap: 0.5rem;
+    p {
+        margin: 0;
+    }
+}
+</style>
