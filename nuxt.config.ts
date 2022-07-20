@@ -1,6 +1,8 @@
 import { NuxtConfig } from "@nuxt/types";
 
 const config: NuxtConfig = {
+    ssr: false,
+
 	// Target: https://go.nuxtjs.dev/config-target
 	target: "static",
 
@@ -9,7 +11,7 @@ const config: NuxtConfig = {
 		title: "Paradar",
 		meta: [
 			{ charset: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ name: "viewport", content: "width=device-width, initial-scale=1, shrink-to-fit=no" },
 			{ hid: "description", name: "description", content: "" },
 			{ name: "format-detection", content: "telephone=no" }
 		],
@@ -20,15 +22,14 @@ const config: NuxtConfig = {
 
 	// Global CSS: https://go.nuxtjs.dev/config-css
 	css: [
+		"~/assets/scss/main.scss"
 	],
 
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 	plugins: [
-		{
-			src: "@/plugins/vueLayers.js",
-			ssr: false
-		},
-        "~/plugins/flespiConnector.ts"
+        "@/plugins/vueLayers.js",
+		"~/plugins/flespiConnector.ts",
+		"~/plugins/bootstrapVue.ts"
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -74,7 +75,11 @@ const config: NuxtConfig = {
 			if (ctx.isDev) {
 				config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
 			}
-		}
+		},
+		transpile: ["bootstrap-vue"]
+	},
+	bootstrapVue: {
+		icons: true
 	}
 };
 

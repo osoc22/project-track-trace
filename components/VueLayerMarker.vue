@@ -1,7 +1,7 @@
 <template>
   <div>
     <vl-interaction-select id="interact" @select="onSelect" @unselect="onDeselect" />
-    <vl-feature id="position-feature">
+    <vl-feature>
       <vl-geom-point :coordinates="coordinates" />
       <vl-style>
         <vl-style-icon
