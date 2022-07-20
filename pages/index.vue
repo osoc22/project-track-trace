@@ -7,8 +7,7 @@
     <DetailsPane />
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
-        <vue-layer-marker v-for="position in positions" :key="position.id" :coordinates="[position.longitude, position.latitude]" />
-        <vue-layer-marker v-for="pos in positions" :key="pos.trackerId" :coordinates="[pos.longitude, pos.latitude]" />
+        <vue-layer-marker v-for="pos in positions" :key="pos.id" :coordinates="[pos.longitude, pos.latitude]" />
       </template>
     </vue-layer-map>
   </div>
@@ -31,20 +30,16 @@ interface PositionData {
 export default Vue.extend({
   name: "IndexPage",
   components: { VueLayerMarker, FlyOut, DetailsPane },
-  props: {
-    dummyPositions: { // dummy data, to be OVERWRITTEN once we receive data from our client
-      type: Array as PropType<Array<PositionData>>,
-      default: () => [
-        { trackerId: "BXL001", latitude: 50.8476, longitude: 4.3572 },
-        { trackerId: "ANT001", latitude: 51.2213, longitude: 4.4051 },
-        { trackerId: "TURN001", latitude: 51.3217, longitude: 4.9376 }]
-    }
-  },
   data () {
     return {
-      positions: [] as Array<PositionData>,
+      //positions: [] as Array<PositionData>,
+      positions: [
+          { id: "BXL001", latitude: 50.8476, longitude: 4.3572 },
+          { id: "ANT001", latitude: 51.2213, longitude: 4.4051 },
+          { id: "TURN001", latitude: 51.3217, longitude: 4.9376 }],
       zoom: 6,
-      client: this.$initiateClient() // Initiate the client
+      client: this.$initiateClient(), // Initiate the client
+        center: [4.3572, 50.8476]
     };
   },
   async fetch () {

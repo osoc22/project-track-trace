@@ -135,6 +135,14 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
         });
     });
 
+    client.on("error", () => {
+        client.end(true);
+    });
+
+    client.on("close", () => {
+        client.end(true);
+    });
+
     return client;
 }
 
