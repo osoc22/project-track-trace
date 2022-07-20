@@ -80,6 +80,9 @@ const config: NuxtConfig = {
 	},
 	bootstrapVue: {
 		icons: true
+	},
+	env: {
+		FLESPI_KEY: process.env.FLESPI_KEY || "no-key-found"
 	}
 };
 
