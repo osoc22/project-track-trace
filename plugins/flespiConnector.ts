@@ -97,13 +97,26 @@ export const eventBus = new Vue(); // creating an event bus.
  * Creating and connecting Flespi client
  */
 function createClient (): MqttClient {
-    return connect("wss://mqtt.flespi.io", {
+    const client = connect("wss://mqtt.flespi.io", {
         clientId: generateRandomId(10),
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
         username: "FlespiToken " + process.env.FLESPI_KEY,
         protocolVersion: 5,
         clean: true
     });
+
+    const channels = [
+        {
+            id: 1134425,
+            name: "oSoc - Tracker"
+        },
+        {
+            id: 1135031,
+            name: "oSoc - Smartphone"
+        }
+    ];
+
+    return setupClient(client, channels);
 }
 
 /**
@@ -114,11 +127,13 @@ function createClient (): MqttClient {
 function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
+        console.log("Connected...");
         channels.forEach((channel: Channel) => {
             client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
                 if (err) {
                     client.end(true); // force disconnect
                 }
+                console.log(`Subscribed ${channel.id}`);
             });
         });
     });
