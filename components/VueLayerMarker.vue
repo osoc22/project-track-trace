@@ -4,15 +4,15 @@
     <vl-style>
       <vl-style-icon
         :src="src"
-        :scale="0.2"
-        :anchor="[0.5, 1]"
+        :scale="scale"
+        :anchor="anchor"
       />
     </vl-style>
   </vl-feature>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent} from "vue";
 
 export default defineComponent({
     name: "VueLayerMarker",
@@ -28,6 +28,10 @@ export default defineComponent({
         scale: {
           type: Number,
           default: 0.2
+        },
+        anchor: {
+          type: Array,
+          default: () => [0.5, 1]
         }
     }
 });
