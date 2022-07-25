@@ -4,7 +4,7 @@
       <template #primary>
         <div class="d-flex flex-column align-items-start container">
           <phone-tracking-button class="my-1 w-100" :client="client" />
-          <fly-out-button v-b-toggle.secondary-panel />
+          <!-- <fly-out-button v-b-toggle.secondary-panel /> -->
         </div>
       </template>
       <template #secondary>
