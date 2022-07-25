@@ -5,8 +5,12 @@
         <div class="d-flex flex-column align-items-start container">
           <phone-tracking-button class="my-1 w-100" :client="client" />
           <!-- <fly-out-button v-b-toggle.secondary-panel /> -->
-            <tracked-asset-card v-for="position in positions" :key="position.id" :position="position"
-                                :device="devices.find(device => device.id === position.id)"/>
+          <tracked-asset-card
+            v-for="position in positions"
+            :key="position.id"
+            :position="position"
+            :device="devices.find(device => device.id === position.id)"
+          />
         </div>
       </template>
       <template #secondary>
@@ -17,7 +21,17 @@
     </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
-        <vue-layer-marker v-for="pos in positions" :key="pos.id" :coordinates="[pos.longitude, pos.latitude]" />
+        <vue-layer-marker
+          v-for="pos in positions"
+          :key="pos.id"
+          :details="pos"
+          :coordinates="[pos.longitude, pos.latitude]"
+          :src="pos.id.includes('sp_') ? '/sp_marker.png' : '/teltonika_marker.png'"
+          :scale="0.1"
+          :anchor="pos.id.includes('sp_') ? [0.5, 0.5] : [0.5, 450]"
+          :anchor-y-mode="pos.id.includes('sp_') ? 'fraction' : 'pixels'"
+        />
+        <VueLayerMarkerPopup />
       </template>
     </vue-layer-map>
   </div>
@@ -26,13 +40,14 @@
 <script lang="ts">
 import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
+import VueLayerMarkerPopup from "~/components/VueLayerMarkerPopup.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
 
 export default Vue.extend({
   name: "IndexPage",
-  components: { TrackedAssetCard, VueLayerMarker, DualFlyOut },
+  components: { TrackedAssetCard, VueLayerMarker, DualFlyOut, VueLayerMarkerPopup },
   data () {
     return {
       positions: [] as Array<Position>,
