@@ -8,5 +8,10 @@ declare type Position = {
     satellites?: number,
     speed?: number,
     valid?: boolean,
-    timestamp?: number
+    timestamp?: number,
+    alarmEvent?: boolean,
+    batteryLevel?: number,
+    sleepMode?: boolean,
+    movementStatus?: boolean,
+    id: string
 }

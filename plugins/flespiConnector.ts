@@ -111,10 +111,19 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
         const splitTopic: string[] = topic.split("/");
         const locationId: string = splitTopic[splitTopic.length - 1];
         const data = JSON.parse(msg.toString("utf-8"));
-        emitNewCoordinates(locationId, {
+        emitNewCoordinates({
             latitude: data["position.latitude"],
             longitude: data["position.longitude"],
-            timestamp: data.timestamp
+            altitude: data["position.altitude"],
+            direction: data["position.direction"],
+            satellites: data["position.satellites"],
+            speed: data["position.speed"],
+            sleepMode: data["sleep.mode.status"],
+            timestamp: data.timestamp,
+            batteryLevel: data["battery.level"],
+            alarmEvent: data["alarm.event"],
+            movementStatus: data["movement.status"],
+            id: locationId
         });
     });
 
@@ -129,8 +138,8 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 /**
  * Emits the new coordinates to the parent component
  */
-function emitNewCoordinates (id: string, position: Position): void {
-    eventBus.$emit("newCoordinates", { id, ...position });
+function emitNewCoordinates (position: Position): void {
+    eventBus.$emit("newCoordinates", position);
 }
 
 /**
