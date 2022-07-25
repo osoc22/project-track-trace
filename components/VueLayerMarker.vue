@@ -6,6 +6,8 @@
         :src="src"
         :scale="scale"
         :anchor="anchor"
+        :anchor-y-units="anchorYMode"
+        :anchor-x-mode="anchorXMode"
       />
     </vl-style>
   </vl-feature>
@@ -32,6 +34,14 @@ export default defineComponent({
         anchor: {
           type: Array,
           default: () => [0.5, 1]
+        },
+        anchorYMode: {
+          type: String,
+          default: "fraction"
+        },
+        anchorXMode: {
+          type: String,
+          default: "fraction"
         }
     }
 });

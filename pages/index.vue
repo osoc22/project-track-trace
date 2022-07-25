@@ -21,7 +21,8 @@
           :coordinates="[pos.longitude, pos.latitude]"
           :src="pos.id.includes('sp_') ? '/sp_marker.png' : '/teltonika_marker.png'"
           :scale="0.1"
-          :anchor="pos.id.includes('sp_') ? [0.5, 0.5] : [0.5, 1]"
+          :anchor="pos.id.includes('sp_') ? [0.5, 0.5] : [0.5, 450]"
+          :anchor-y-mode="pos.id.includes('sp_') ? 'fraction' : 'pixels'"
         />
       </template>
     </vue-layer-map>
