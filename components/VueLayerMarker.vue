@@ -5,8 +5,8 @@
         <vl-style-icon
           id="marker"
           :src="selectediconSrc"
-          :scale="0.2"
-          :anchor="[0.5, 1]"
+          :scale="0.15"
+          :anchor="[0.5, 0.75]"
         />
       </vl-style>
     </vl-interaction-select>
@@ -16,10 +16,13 @@
         <vl-style-icon
           id="marker"
           :src="iconSrc"
-          :scale="0.2"
-          :anchor="[0.5, 1]"
+          :scale="0.15"
+          :anchor="[0.5, 0.75]"
         />
       </vl-style>
+    </vl-feature>
+    <vl-feature :properties="details">
+      <vl-geom-point :coordinates="coordinates" />
     </vl-feature>
   </div>
 </template>
@@ -41,7 +44,7 @@ export default defineComponent({
         },
         selectSrc: {
             type: String,
-            default: "/marker.png"
+            default: "/marker-selected.png"
         },
         details: { // ToDo - define positionData object like index.vue (or re-use that one by referencing it, somehow)
           type: Object,
