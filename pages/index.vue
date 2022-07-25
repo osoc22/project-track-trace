@@ -4,7 +4,7 @@
       <template #primary>
         <div class="d-flex flex-column align-items-start container">
           <phone-tracking-button class="my-1 w-100" :client="client" />
-          <fly-out-button v-b-toggle.secondary-panel />
+          <!-- <fly-out-button v-b-toggle.secondary-panel /> -->
         </div>
       </template>
       <template #secondary>
@@ -34,33 +34,26 @@ import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 
-interface PositionData {
-  id: string,
-  latitude: number,
-  longitude: number
-}
-
 export default Vue.extend({
   name: "IndexPage",
   components: { VueLayerMarker, DualFlyOut },
   data () {
     return {
-      positions: [] as Array<PositionData>,
+      positions: [] as Array<Position>,
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
-        center: [4.3572, 50.8476]
+      center: [4.3572, 50.8476],
+      devices: [] as Array<Device>
     };
   },
-  /*
-   * async fetch () {
-   *  // Gets the list of channels on which we will subscribe to get trackers data
-   *  const channels = await this.$getChannelList();
-   *  this.client = this.$getPositionData(this.client, channels); // Get the GPS data
-   * },
-   */
+  async fetch () {
+    // Gets the list of devices from flespi
+    this.devices = await this.$getDeviceList();
+    console.log(this.devices);
+  },
   fetchOnServer: false,
   created () {
-    eventBus.$on("newCoordinates", (data: PositionData) => {
+    eventBus.$on("newCoordinates", (data: Position) => {
       const currentData = this.positions.filter(pos => pos.id === data.id);
       if (currentData.length > 0) {
         this.positions[this.positions.indexOf(currentData[0])] = data;
@@ -68,6 +61,13 @@ export default Vue.extend({
         this.positions.push(data);
       }
     });
+    setInterval(() => {
+      this.positions.forEach((position, index) => {
+        if (Math.abs(position.timestamp - Date.now() / 1000) >= 60) {
+          this.positions.splice(index, 1);
+        }
+      });
+    }, 60000);
   },
   beforeDestroy () {
     this.client.end(true);
