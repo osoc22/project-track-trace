@@ -1,6 +1,15 @@
 <template>
   <div>
-    <vl-interaction-select @select="onSelect" @unselect="onDeselect" />
+    <vl-interaction-select @select="onSelect" @unselect="onDeselect">
+      <vl-style>
+        <vl-style-icon
+          id="marker"
+          :src="selectediconSrc"
+          :scale="0.2"
+          :anchor="[0.5, 1]"
+        />
+      </vl-style>
+    </vl-interaction-select>
     <vl-feature :properties="details">
       <vl-geom-point :coordinates="coordinates" />
       <vl-style>
@@ -29,6 +38,10 @@ export default defineComponent({
             type: String,
             default: "/marker.png"
         },
+        selectSrc: {
+            type: String,
+            default: "/marker.png"
+        },
         details: { // ToDo - define positionData object like index.vue (or re-use that one by referencing it, somehow)
           type: Object,
           default: () => {}
@@ -37,7 +50,8 @@ export default defineComponent({
     emits: ["popup-toggled"],
     data () {
       return {
-        iconSrc: this.src
+        iconSrc: this.src,
+        selectediconSrc: this.selectSrc
       };
     },
     methods: {

@@ -8,9 +8,9 @@
             {{ item }}
           </p>
         </h6>
-        <button type="button" class="btn btn-link" @click="toggleDetails">
+        <!-- <button type="button" class="btn btn-link" @click="toggleDetails">
           Details
-        </button>
+        </button> -->
       </div>
     </vl-overlay>
   </div>
@@ -66,7 +66,7 @@ export default defineComponent({
     .overlay-content {
         background: #fff;
         box-shadow: 5px 5px 5px rgb(2 2 2 / 50%);
-        max-height: 200px;
+        max-height: 225px;
         max-width: 150px;
         overflow: auto;
     }
