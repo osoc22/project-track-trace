@@ -25,14 +25,7 @@
 import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
-import { eventBus, Device } from "~/plugins/flespiConnector";
-
-interface PositionData {
-  id: string,
-  latitude: number,
-  longitude: number,
-  timestamp: number
-}
+import { eventBus } from "~/plugins/flespiConnector";
 
 export default Vue.extend({
   name: "IndexPage",
