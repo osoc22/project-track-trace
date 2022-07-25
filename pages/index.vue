@@ -25,7 +25,7 @@
 import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
-import { eventBus } from "~/plugins/flespiConnector";
+import { eventBus, Device } from "~/plugins/flespiConnector";
 
 interface PositionData {
   id: string,
@@ -42,16 +42,15 @@ export default Vue.extend({
       positions: [] as Array<PositionData>,
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
-        center: [4.3572, 50.8476]
+      center: [4.3572, 50.8476],
+      devices: [] as Array<Device>
     };
   },
-  /*
-   * async fetch () {
-   *  // Gets the list of channels on which we will subscribe to get trackers data
-   *  const channels = await this.$getChannelList();
-   *  this.client = this.$getPositionData(this.client, channels); // Get the GPS data
-   * },
-   */
+  async fetch () {
+    // Gets the list of devices from flespi
+    this.devices = await this.$getDeviceList();
+    console.log(this.devices);
+  },
   fetchOnServer: false,
   created () {
     eventBus.$on("newCoordinates", (data: PositionData) => {
