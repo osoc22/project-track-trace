@@ -34,7 +34,7 @@ export default Vue.extend({
   components: { TrackedAssetCard, VueLayerMarker, DualFlyOut },
   data () {
     return {
-      positions: [] as Array<PositionData>,
+      positions: [] as Array<Position>,
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
       center: [4.3572, 50.8476],
@@ -47,8 +47,8 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   created () {
-    eventBus.$on("newCoordinates", (data: PositionData) => {
-      const currentData = this.positions.filter(position => position.id === data.id);
+    eventBus.$on("newCoordinates", (data: Position) => {
+      const currentData = this.positions.filter(pos => pos.id === data.id);
       if (currentData.length > 0) {
         this.positions[this.positions.indexOf(currentData[0])] = data;
       } else {
