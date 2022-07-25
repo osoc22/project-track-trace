@@ -197,7 +197,7 @@ function sendLocationData (client: MqttClient, data: LocationData): void {
 }
 
 function generateRandomId (length: number): string {
-    return "_" + Math.random().toString(36).substring(2, 2 + length);
+    return "sp_" + Math.random().toString(36).substring(2, 2 + length);
 }
 
 /**

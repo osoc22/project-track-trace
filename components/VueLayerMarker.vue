@@ -4,9 +4,11 @@
       <vl-style>
         <vl-style-icon
           id="marker"
-          :src="selectediconSrc"
-          :scale="0.15"
-          :anchor="[0.5, 0.75]"
+          :src="selectIconSrc"
+          :scale="scale"
+          :anchor="anchor"
+          :anchor-y-units="anchorYMode"
+          :anchor-x-mode="anchorXMode"
         />
       </vl-style>
     </vl-interaction-select>
@@ -16,8 +18,10 @@
         <vl-style-icon
           id="marker"
           :src="iconSrc"
-          :scale="0.15"
-          :anchor="[0.5, 0.75]"
+          :scale="scale"
+          :anchor="anchor"
+          :anchor-y-units="anchorYMode"
+          :anchor-x-mode="anchorXMode"
         />
       </vl-style>
     </vl-feature>
@@ -39,6 +43,22 @@ export default defineComponent({
             type: String,
             default: "/marker.png"
         },
+        scale: {
+          type: Number,
+          default: 0.2
+        },
+        anchor: {
+          type: Array,
+          default: () => [0.5, 1]
+        },
+        anchorYMode: {
+          type: String,
+          default: "fraction"
+        },
+        anchorXMode: {
+          type: String,
+          default: "fraction"
+        },
         selectSrc: {
             type: String,
             default: "/marker-selected.png"
@@ -52,7 +72,7 @@ export default defineComponent({
     data () {
       return {
         iconSrc: this.src,
-        selectediconSrc: this.selectSrc
+        selectIconSrc: this.selectSrc
       };
     },
     methods: {
