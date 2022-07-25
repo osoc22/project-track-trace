@@ -10,22 +10,6 @@ declare module "vue/types/vue" {
     }
 }
 
-declare module "@nuxt/types" {
-    interface NuxtAppOptions {
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
-    }
-    interface Context {
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
-    }
-}
-
-declare module "vuex/types/index" {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Store<S> {
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
-    }
-}
-
 function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
     const data = {
         ident: client.options.clientId || generateRandomId(10),

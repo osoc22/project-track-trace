@@ -11,36 +11,10 @@ declare module "vue/types/vue" {
     }
 }
 
-declare module "@nuxt/types" {
-    interface NuxtAppOptions {
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-    }
-    interface Context {
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-    }
-}
-
-declare module "vuex/types/index" {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Store<S> {
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-    }
-}
-
 /**
  * Calls Flespi API to get the list of all connected devices
  */
 async function getDeviceList (): Promise<Device[]> {
-
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
     // Get the data via the API

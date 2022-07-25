@@ -14,34 +14,6 @@ declare module "vue/types/vue" {
     }
 }
 
-declare module "@nuxt/types" {
-    interface NuxtAppOptions {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $initiateClient(): MqttClient
-    }
-    interface Context {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $initiateClient(): MqttClient
-    }
-}
-
-declare module "vuex/types/index" {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Store<S> {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $initiateClient(): MqttClient
-    }
-}
-
 /**
  * Creating and connecting Flespi client
  */
