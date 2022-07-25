@@ -2,7 +2,7 @@
   <div v-if="display">
     <vl-overlay :position="position">
       <div class="overlay-content">
-        <h6 v-for="(item, index) in details" :key="index" class="ml-2 mr-2">
+        <h6 v-for="(item, index) in details" :key="index" :class="attention ? 'ml-2 mr-2 attention' : 'ml-2 mr-2'">
           {{ index }}
           <p class="lead">
             {{ item }}
@@ -40,14 +40,16 @@ export default defineComponent({
             display: this.initDisplay,
             // WARNING: this position is regular long/lat (°N °E) BE SURE TO CONVERT
             position: this.initPosition,
-            details: this.initDetails
+            details: this.initDetails,
+            attention: false
         };
     },
     mounted () {
-        this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object) => {
+        this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object, alarmEvent: boolean) => {
             this.display = true;
             this.position = coordinates;
             this.details = details;
+            this.attention = alarmEvent;
       });
       this.$root.$on("popup-hide", () => {
         this.display = false;
@@ -64,8 +66,8 @@ export default defineComponent({
     .overlay-content {
         background: #fff;
         box-shadow: 5px 5px 5px rgb(2 2 2 / 50%);
-        max-height: 225px;
-        max-width: 150px;
+        max-height: 260px;
+        max-width: 175px;
         overflow: auto;
     }
 
@@ -77,5 +79,9 @@ export default defineComponent({
     .btn:focus,.btn:active{
       outline: none;
       box-shadow: none;
+    }
+
+    .attention {
+      color: red;
     }
 </style>

@@ -17,7 +17,7 @@
     </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
-        <vue-layer-marker v-for="pos in positions" :key="pos.id" :details="pos" :coordinates="[pos.longitude, pos.latitude]" />
+        <vue-layer-marker v-for="pos in positions" :key="pos.id" :details="pos" :devices="devices" :coordinates="[pos.longitude, pos.latitude]" />
         <VueLayerMarkerPopup />
       </template>
     </vue-layer-map>

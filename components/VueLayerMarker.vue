@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { toLonLat } from "ol/proj";
 
 export default defineComponent({
@@ -43,9 +43,13 @@ export default defineComponent({
             type: String,
             default: "/marker.png"
         },
-        details: { // ToDo - define positionData object like index.vue (or re-use that one by referencing it, somehow)
-          type: Object,
+        details: {
+          type: Object as PropType<Position>,
           default: () => {}
+        },
+        devices: {
+          type: Array as PropType<Device[]>,
+          default: () => []
         }
     },
     emits: ["popup-toggled"],
@@ -75,12 +79,22 @@ export default defineComponent({
          *
          * We blame this behaviour on VueLayers being quirky.
          */
-        const f = e.feature.getProperties();
+        const f: Position = e.feature.getProperties();
+        const device = this.devices.find(device => device.id === f.id);
         // convert timestamp to readable format
         const timestamp : Date = new Date(f.timestamp * 1000);
         const tsString : string = timestamp.toLocaleString();
-        const details = { id: f.id, longitude: f.longitude, latitude: f.latitude, timestamp: tsString };
-        this.$root.$emit("popup-toggled", lonlat, details);
+        const details = Object.fromEntries(Object.entries({
+          id: device ? device.name : f.id,
+          longitude: f.longitude,
+          latitude: f.latitude,
+          "Battery Level": f.batteryLevel,
+          "Last Received Data": tsString
+        }).filter(([_key, value]) => value));
+        if (f.movementStatus) {
+          details.Moving = undefined;
+        }
+        this.$root.$emit("popup-toggled", lonlat, details, f.alarmEvent);
       },
       onDeselect () {
         this.$root.$emit("popup-hide");
