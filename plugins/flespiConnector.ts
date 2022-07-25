@@ -27,8 +27,17 @@ export interface LocationData {
     "position.altitude": number | null
 }
 
+export interface Device {
+}
+
+export interface PositionData {
+    id: string,
+    latitude: number,
+    longitude: number
+}
+
 /**
- * A device connected to Flespi
+ * A Flespi channel
  */
 export interface Channel {
     id: number,
@@ -44,7 +53,16 @@ declare module "vue/types/vue" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all active channels
+         */
         $getChannelList(): Promise<Channel[]>
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
+        $getAllDevices(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
@@ -57,7 +75,16 @@ declare module "@nuxt/types" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all active channels
+         */
         $getChannelList(): Promise<Channel[]>
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
+        $getAllDevices(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
     interface Context {
@@ -67,7 +94,16 @@ declare module "@nuxt/types" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all active channels
+         */
         $getChannelList(): Promise<Channel[]>
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
+        $getAllDevices(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
@@ -81,7 +117,16 @@ declare module "vuex/types/index" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all active channels
+         */
         $getChannelList(): Promise<Channel[]>
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
+        $getAllDevices(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
@@ -114,6 +159,7 @@ function createClient (): MqttClient {
 function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // When the client is connected, we subscribe to the telemetry topic
     client.on("connect", () => {
+        console.log("connected");
         channels.forEach((channel: Channel) => {
             client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
                 if (err) {
@@ -149,10 +195,11 @@ function emitNewCoordinates (id: string, position: Position): void {
     eventBus.$emit("newCoordinates", { id, ...position });
 }
 
+// TODO : duplicate code (see getAllDevices())
 /**
  * Calls Flespi API to get the list of all active channels
  */
-async function callAPI (): Promise<Channel[]> {
+async function getAllChannels (): Promise<Channel[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
     const channels: Channel[] = [];
@@ -174,6 +221,33 @@ async function callAPI (): Promise<Channel[]> {
     }
 
     return channels;
+}
+
+/**
+ * Calls Flespi API to get the list of all connected devices
+ */
+async function getAllDevices (): Promise<Device[]> {
+    // Token needed to authenticate in Flespi
+    const token: string = "FlespiToken " + process.env.FLESPI_KEY;
+    const devices: Device[] = [];
+
+    // Get the data via the API
+    const pendingResponse = await fetch(
+        "https://flespi.io/gw/devices/all",
+        {
+            headers: {
+                Authorization: token
+            }
+        }
+    );
+
+    const json = await pendingResponse.json();
+
+    for (let i = 0; i < json.result.length; i++) {
+        devices.push(json.result[i]);
+    }
+    console.log(devices);
+    return devices;
 }
 
 function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
@@ -201,7 +275,8 @@ function generateRandomId (length: number): string {
 const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", createClient);
     inject("getPositionData", setupClient);
-    inject("getChannelList", callAPI);
+    inject("getChannelList", getAllChannels);
+    inject("getAllDevices", getAllDevices);
     inject("handleUpdatedPosition", handleNewPosition);
 };
 

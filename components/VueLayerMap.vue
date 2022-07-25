@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { eventBus } from "~/plugins/flespiConnector";
 
 export default defineComponent({
     name: "VueLayerMap",
@@ -36,6 +37,11 @@ export default defineComponent({
             center: this.initialCenter,
             rotation: this.initialRotation
         };
+    },
+    created () {
+        eventBus.$on("centerMapOnTrackedAsset", (position: number[]) => {
+            this.center = position;
+        });
     }
 });
 </script>

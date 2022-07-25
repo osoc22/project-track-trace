@@ -5,6 +5,7 @@
         <div class="d-flex flex-column align-items-start container">
           <phone-tracking-button class="my-1 w-100" :client="client" />
           <fly-out-button v-b-toggle.secondary-panel />
+            <tracked-asset-card v-for="position in positions" :key="position.id" :position="[position.longitude, position.latitude]" :id="position.id" />
         </div>
       </template>
       <template #secondary>
@@ -25,17 +26,12 @@
 import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
-import { eventBus } from "~/plugins/flespiConnector";
-
-interface PositionData {
-  id: string,
-  latitude: number,
-  longitude: number
-}
+import { eventBus, PositionData } from "~/plugins/flespiConnector";
+import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
 
 export default Vue.extend({
   name: "IndexPage",
-  components: { VueLayerMarker, DualFlyOut },
+  components: { TrackedAssetCard, VueLayerMarker, DualFlyOut },
   data () {
     return {
       positions: [] as Array<PositionData>,
@@ -52,7 +48,7 @@ export default Vue.extend({
   fetchOnServer: false,
   created () {
     eventBus.$on("newCoordinates", (data: PositionData) => {
-      const currentData = this.positions.filter(pos => pos.id === data.id);
+      const currentData = this.positions.filter(position => position.id === data.id);
       if (currentData.length > 0) {
         this.positions[this.positions.indexOf(currentData[0])] = data;
       } else {
