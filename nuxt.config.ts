@@ -76,10 +76,27 @@ const config: NuxtConfig = {
 				config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
 			}
 		},
-		transpile: ["bootstrap-vue"]
+		transpile: ["bootstrap-vue"],
+		babel: {
+			compact: true
+		}
 	},
+
+	/*
+	 * In order to detail which components Nuxt.JS needs to keep,
+	 * you'll need the used plugins, directives and components below
+	 * https://bootstrap-vue.org/docs#tree-shaking-with-nuxtjs
+	 */
 	bootstrapVue: {
-		icons: true
+		componentsPlugins: [
+			"ButtonPlugin",
+			"ToastPlugin",
+			"SidebarPlugin"
+		],
+		components: [
+			"BIconPinMap",
+			"BIconList"
+		]
 	},
 	env: {
 		FLESPI_KEY: process.env.FLESPI_KEY || "no-key-found"
