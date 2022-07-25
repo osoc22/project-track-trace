@@ -76,9 +76,12 @@ const config: NuxtConfig = {
 				config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
 			}
 		},
-		transpile: ["bootstrap-vue"]
+		transpile: ["bootstrap-vue"],
+		babel: {
+			compact: true
+		}
 	},
-	
+
 	/*
 	 * In order to detail which components Nuxt.JS needs to keep,
 	 * you'll need the used plugins, directives and components below
