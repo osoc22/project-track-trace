@@ -9,9 +9,5 @@ export function handleNewPosition (client: MqttClient, result: GeolocationPositi
         "position.longitude": result.coords.longitude,
         "position.altitude": result.coords.altitude
     };
-    sendLocationData(client, data);
-}
-
-function sendLocationData (client: MqttClient, data: LocationData): void {
-    client.publish("paradar/smartphone", JSON.stringify(data), { qos: 0 });
+    client.publish("paradar/smartphone", JSON.stringify(data), {qos: 0});
 }

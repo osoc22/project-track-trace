@@ -49,7 +49,7 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     // emits new coordinates whenever the subscription receives new data
     client.on("message", (_topic: string, msg: Buffer) => {
         const data = JSON.parse(msg.toString("utf-8"));
-        emitNewCoordinates({
+        eventBus.$emit("newCoordinates", {
             latitude: data["position.latitude"],
             longitude: data["position.longitude"],
             altitude: data["position.altitude"],
@@ -71,11 +71,4 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     });
 
     return client;
-}
-
-/**
- * Emits the new coordinates to the parent component
- */
-function emitNewCoordinates (position: Position): void {
-    eventBus.$emit("newCoordinates", position);
 }
