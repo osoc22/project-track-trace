@@ -78,8 +78,22 @@ const config: NuxtConfig = {
 		},
 		transpile: ["bootstrap-vue"]
 	},
+	
+	/*
+	 * In order to detail which components Nuxt.JS needs to keep,
+	 * you'll need the used plugins, directives and components below
+	 * https://bootstrap-vue.org/docs#tree-shaking-with-nuxtjs
+	 */
 	bootstrapVue: {
-		icons: true
+		componentsPlugins: [
+			"ButtonPlugin",
+			"ToastPlugin",
+			"SidebarPlugin"
+		],
+		components: [
+			"BIconPinMap",
+			"BIconList"
+		]
 	},
 	env: {
 		FLESPI_KEY: process.env.FLESPI_KEY || "no-key-found"
