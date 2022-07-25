@@ -1,4 +1,4 @@
 declare type Device = {
-    id: number,
+    id: string,
     name: string
 }
