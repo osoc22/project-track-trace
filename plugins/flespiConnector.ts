@@ -3,47 +3,6 @@ import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
 import { Inject } from "@nuxt/types/app";
 
-/// Models
-/**
- * Position interface to get position data from a tracker
- */
-export interface Position {
-    altitude?: number,
-    direction?: number,
-    hdop?: number,
-    latitude: number,
-    longitude: number,
-    pdop?: number,
-    satellites?: number,
-    speed?: number,
-    valid?: boolean
-}
-
-export interface LocationData {
-    ident: string,
-    timestamp: number,
-    "position.longitude": number,
-    "position.latitude": number,
-    "position.altitude": number | null
-}
-
-export interface Device {
-}
-
-export interface PositionData {
-    id: string,
-    latitude: number,
-    longitude: number
-}
-
-/**
- * A Flespi channel
- */
-export interface Channel {
-    id: number,
-    name: string
-}
-
 /// Modules declaration
 declare module "vue/types/vue" {
     interface Vue {
@@ -243,7 +202,6 @@ async function getAllChannels (): Promise<Channel[]> {
 async function getAllDevices (): Promise<Device[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
-    const devices: Device[] = [];
 
     // Get the data via the API
     const pendingResponse = await fetch(
@@ -257,13 +215,19 @@ async function getAllDevices (): Promise<Device[]> {
 
     const json = await pendingResponse.json();
 
-    return json.result.map((device: any) => ({
-        name: device.name,
-        id: device.configuration.ident
-    }));
+    return json.result
+        .map((
+            device: any) => (
+                {
+                    name: device.name,
+                    id: device.configuration.ident
+                }
+            )
+        );
 }
 
 function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
+    console.log("result", result);
     const data = {
         ident: client.options.clientId || generateRandomId(10),
         timestamp: result.timestamp / 1000,
@@ -271,6 +235,7 @@ function handleNewPosition (client: MqttClient, result: GeolocationPosition): vo
         "position.longitude": result.coords.longitude,
         "position.altitude": result.coords.altitude
     };
+    console.log("data", data);
     sendLocationData(client, data);
 }
 
