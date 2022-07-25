@@ -29,8 +29,8 @@ import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import VueLayerMarkerPopup from "~/components/VueLayerMarkerPopup.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
-import { eventBus } from "~/plugins/flespiConnector";
 import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
+import { eventBus } from "~/plugins/utils";
 
 export default Vue.extend({
   name: "IndexPage",

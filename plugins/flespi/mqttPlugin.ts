@@ -1,7 +1,7 @@
 import { connect, MqttClient } from "mqtt";
 import { Context, Plugin } from "@nuxt/types";
-import Vue from "vue";
 import { Inject } from "@nuxt/types/app";
+import { eventBus, generateRandomId } from "~/plugins/utils";
 
 /// Modules declaration
 declare module "vue/types/vue" {
@@ -11,13 +11,6 @@ declare module "vue/types/vue" {
          * @returns The mqtt client connected to Flespi
          */
         $initiateClient(): MqttClient
-        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
-
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -28,13 +21,6 @@ declare module "@nuxt/types" {
          * @returns The mqtt client connected to Flespi
          */
         $initiateClient(): MqttClient
-        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
-
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
     interface Context {
         /**
@@ -42,13 +28,6 @@ declare module "@nuxt/types" {
          * @returns The mqtt client connected to Flespi
          */
         $initiateClient(): MqttClient
-        $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
-
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
@@ -60,23 +39,9 @@ declare module "vuex/types/index" {
          * @returns The mqtt client connected to Flespi
          */
         $initiateClient(): MqttClient
-        $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
-
-        /**
-         * Calls Flespi API to get the list of all connected devices
-         */
-        $getDeviceList(): Promise<Device[]>
-        $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
-/// Event buses
-/**
- * EventBus to transmit data to component.
- */
-export const eventBus = new Vue(); // creating an event bus.
-
-/// Methods
 /**
  * Creating and connecting Flespi client
  */
@@ -89,7 +54,7 @@ function createClient (): MqttClient {
         clean: true
     });
 
-    const channels = [
+    const channels: Channel[] = [
         {
             id: 1134425,
             name: "oSoc - Tracker"
@@ -157,57 +122,10 @@ function emitNewCoordinates (position: Position): void {
 }
 
 /**
- * Calls Flespi API to get the list of all connected devices
- */
-async function getDeviceList (): Promise<Device[]> {
-    // Token needed to authenticate in Flespi
-    const token: string = "FlespiToken " + process.env.FLESPI_KEY;
-
-    // Get the data via the API
-    const pendingResponse = await fetch(
-        "https://flespi.io/gw/devices/all",
-        {
-            headers: {
-                Authorization: token
-            }
-        }
-    );
-
-    const json = await pendingResponse.json();
-
-    return json.result.map((device: any) => ({
-        name: device.name,
-        id: device.configuration.ident
-    }));
-}
-
-function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
-    const data = {
-        ident: client.options.clientId || generateRandomId(10),
-        timestamp: result.timestamp / 1000,
-        "position.latitude": result.coords.latitude,
-        "position.longitude": result.coords.longitude,
-        "position.altitude": result.coords.altitude
-    };
-    sendLocationData(client, data);
-}
-
-function sendLocationData (client: MqttClient, data: LocationData): void {
-    client.publish("paradar/smartphone", JSON.stringify(data), { qos: 0 });
-}
-
-function generateRandomId (length: number): string {
-    return "_" + Math.random().toString(36).substring(2, 2 + length);
-}
-
-/**
  * Method plugin
  */
 const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", createClient);
-    inject("getPositionData", setupClient);
-    inject("getDeviceList", getDeviceList);
-    inject("handleUpdatedPosition", handleNewPosition);
 };
 
 export default plugin;
