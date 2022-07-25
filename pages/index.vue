@@ -5,9 +5,8 @@
         <div class="d-flex flex-column align-items-start container">
           <phone-tracking-button class="my-1 w-100" :client="client" />
           <!-- <fly-out-button v-b-toggle.secondary-panel /> -->
-            <tracked-asset-card v-for="position in positions" :key="position.id" :position="[position.longitude, position.latitude]"
-                                :device-name="$getDeviceName(devices.find(device => device.id === position.id))"
-                                :deviceId="$getDeviceId(position)" />
+            <tracked-asset-card v-for="position in positions" :key="position.id" :position="position"
+                                :device="devices.find(device => device.id === position.id)"/>
         </div>
       </template>
       <template #secondary>

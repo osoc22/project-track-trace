@@ -1,32 +1,28 @@
 <template>
   <b-button class="d-flex justify-content-center" @click="centerMap(position)">
-    {{ deviceName === "Smartphone" ? `Smartphone ${deviceId}` : `Device ${deviceName}` }}
+    {{ device === undefined ? `Smartphone ${position.id}` : `Device ${device.name}` }}
   </b-button>
 </template>
 
 <script lang="ts">
-    import { defineComponent } from "vue";
+    import { defineComponent, PropType } from "vue";
     import { eventBus } from "~/plugins/flespiConnector";
 
     export default defineComponent({
         name: "TrackedAssetCard",
         props: {
             position: {
-                type: Array,
+                type: Object as PropType<Position>,
                 required: true
             },
-            deviceName: {
-                type: String,
-                required: true
-            },
-            deviceId: {
-                type: String,
+            device: {
+                type: Object as PropType<Device>,
                 required: true
             }
         },
         methods: {
-            centerMap (position: number[]): void {
-                eventBus.$emit("centerMapOnTrackedAsset", position);
+            centerMap (position: Position): void {
+                eventBus.$emit("centerMapOnTrackedAsset", [position.longitude, position.latitude]);
             }
         }
     });
