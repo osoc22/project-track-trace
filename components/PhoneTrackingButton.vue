@@ -62,10 +62,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .btn {
-    width: fit-content;
-    display: flex;
-    flex-flow: row nowrap;
-    min-width: max-content;
+    width: 100%;
     gap: 0.5rem;
     p {
         margin: 0;

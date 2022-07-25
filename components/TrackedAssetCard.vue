@@ -1,6 +1,6 @@
 <template>
-  <b-button @click="centerMap(position)">
-    {{ deviceName === "Smartphone" ? deviceId : deviceName }}
+  <b-button class="d-flex justify-content-center" @click="centerMap(position)">
+    {{ deviceName === "Smartphone" ? `Smartphone ${deviceId}` : `Device ${deviceName}` }}
   </b-button>
 </template>
 
@@ -34,13 +34,7 @@
 
 <style lang="scss" scoped>
 .btn {
-    width: fit-content;
-    display: flex;
-    flex-flow: row nowrap;
-    min-width: max-content;
-    gap: 0.5rem;
-    p {
-        margin: 0;
-    }
+    width: 100%;
+    margin-top: 0.5rem;
 }
 </style>
