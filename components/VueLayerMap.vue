@@ -7,6 +7,15 @@
       <vl-layer-tile id="osm">
         <vl-source-osm />
       </vl-layer-tile>
+      <vl-interaction-select @select="onSelect" @unselect="onDeselect">
+        <vl-style>
+          <vl-style-icon
+            :src="selectIconSrc"
+            :scale="scale"
+            :anchor="anchor"
+          />
+        </vl-style>
+      </vl-interaction-select>
     </vl-map>
   </client-only>
 </template>
@@ -14,7 +23,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import View from "ol/View";
-import { fromLonLat } from "ol/proj";
+import { fromLonLat, toLonLat } from "ol/proj";
 import { eventBus } from "~/plugins/flespiConnector";
 
 export default defineComponent({
@@ -31,20 +40,71 @@ export default defineComponent({
         initialRotation: {
             type: Number,
             default: 0
+        },
+        selectSrc: {
+            type: String,
+            default: "/marker-selected.png"
+        },
+        scale: {
+          type: Number,
+          default: 0.15
+        },
+        anchor: {
+          type: Array,
+          default: () => [0.5, 0.75]
         }
     },
     data () {
         return {
             zoom: this.initialZoom,
             center: this.initialCenter,
-            rotation: this.initialRotation
+            rotation: this.initialRotation,
+            selectIconSrc: this.selectSrc
         };
     },
-    created () {
+    mounted () {
         eventBus.$on("centerMapOnTrackedAsset", (position: number[]) => {
             const view: View = (this.$refs.vlview as any).$view;
             view.animate({ center: fromLonLat(position), zoom: 18 });
         });
+    },
+    methods: {
+        /**
+         * gets called upon selecting any marker
+         * @param e - the 'event' sent, it looks like {type:string, feature: Feature } where feature is a VueLayers feature
+         */
+      onSelect (e : any) {
+        // TODO - properly document in our docs
+        /*
+         * WARNING: the object that calls the event is NOT necesarily the correct component for the marker we clicked on
+         * due to this behaviour, we cannot just pass this.details. We use the properties stored in the vl-feature of the component
+         * that was clicked, and extract the details needed. This might also need updating in the future.
+         *
+         * We blame this behaviour on VueLayers being quirky.
+         */
+        const f = e.feature.getProperties();
+        /*
+         * set the selectIcon - slower than the onselect triggering, so we see the 'wrong' icon for a 0.5s (+-until zoomed in)
+         * TODO - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
+         */
+        f.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
+        // convert timestamp to readable format
+        const timestamp : Date = new Date(f.timestamp * 1000);
+        const tsString : string = timestamp.toLocaleString();
+        /*
+         * WARNING: the needed coordinates are regular long/lat (°N °E)
+         * BE SURE TO CONVERT
+         */
+        const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
+        const lonlat = toLonLat(markerCoords);
+        const details = { id: f.id, longitude: f.longitude, latitude: f.latitude, timestamp: tsString };
+        // smooth zoom into tracker location
+        eventBus.$emit("centerMapOnTrackedAsset", lonlat);
+        this.$root.$emit("popup-toggled", lonlat, details);
+      },
+      onDeselect () {
+        this.$root.$emit("popup-hide");
+      }
     }
 });
 </script>
