@@ -107,9 +107,7 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
     });
 
     // emits new coordinates whenever the subscription receives new data
-    client.on("message", (topic: string, msg: Buffer) => {
-        const splitTopic: string[] = topic.split("/");
-        const locationId: string = splitTopic[splitTopic.length - 1];
+    client.on("message", (_topic: string, msg: Buffer) => {
         const data = JSON.parse(msg.toString("utf-8"));
         emitNewCoordinates({
             latitude: data["position.latitude"],
@@ -123,7 +121,7 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
             batteryLevel: data["battery.level"],
             alarmEvent: data["alarm.event"],
             movementStatus: data["movement.status"],
-            id: locationId
+            id: data.ident
         });
     });
 
