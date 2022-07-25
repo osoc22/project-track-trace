@@ -29,7 +29,8 @@ const config: NuxtConfig = {
 	plugins: [
         "@/plugins/vueLayers.js",
 		"~/plugins/flespiConnector.ts",
-		"~/plugins/bootstrapVue.ts"
+		"~/plugins/bootstrapVue.ts",
+		"~/plugins/utils.ts"
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components

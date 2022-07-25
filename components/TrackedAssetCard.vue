@@ -1,6 +1,6 @@
 <template>
   <b-button @click="centerMap(position)">
-    {{ id }}
+    {{ deviceName === "Smartphone" ? deviceId : deviceName }}
   </b-button>
 </template>
 
@@ -15,7 +15,11 @@
                 type: Array,
                 required: true
             },
-            id: {
+            deviceName: {
+                type: String,
+                required: true
+            },
+            deviceId: {
                 type: String,
                 required: true
             }
