@@ -24,12 +24,14 @@
         <vue-layer-marker
           v-for="pos in positions"
           :key="pos.id"
+          :details="pos"
           :coordinates="[pos.longitude, pos.latitude]"
           :src="pos.id.includes('sp_') ? '/sp_marker.png' : '/teltonika_marker.png'"
           :scale="0.1"
           :anchor="pos.id.includes('sp_') ? [0.5, 0.5] : [0.5, 450]"
           :anchor-y-mode="pos.id.includes('sp_') ? 'fraction' : 'pixels'"
         />
+        <VueLayerMarkerPopup />
       </template>
     </vue-layer-map>
   </div>
@@ -38,13 +40,14 @@
 <script lang="ts">
 import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
+import VueLayerMarkerPopup from "~/components/VueLayerMarkerPopup.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
 
 export default Vue.extend({
   name: "IndexPage",
-  components: { TrackedAssetCard, VueLayerMarker, DualFlyOut },
+  components: { TrackedAssetCard, VueLayerMarker, DualFlyOut, VueLayerMarkerPopup },
   data () {
     return {
       positions: [] as Array<Position>,
