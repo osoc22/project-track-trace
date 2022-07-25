@@ -42,12 +42,8 @@ export default Vue.extend({
     };
   },
   async fetch () {
-    // Gets the list of channels on which we will subscribe to get trackers data
-    const channels = await this.$getChannelList();
-    this.client = this.$getPositionData(this.client, channels); // Get the GPS data
-      // Gets the list of devices from flespi
-      this.devices = await this.$getAllDevices();
-      console.log(this.devices);
+    // Gets the list of devices from flespi
+    this.devices = await this.$getDeviceList();
   },
   fetchOnServer: false,
   created () {

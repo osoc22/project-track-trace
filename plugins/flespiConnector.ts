@@ -14,14 +14,9 @@ declare module "vue/types/vue" {
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
 
         /**
-         * Calls Flespi API to get the list of all active channels
-         */
-        $getChannelList(): Promise<Channel[]>
-
-        /**
          * Calls Flespi API to get the list of all connected devices
          */
-        $getAllDevices(): Promise<Device[]>
+        $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
@@ -36,14 +31,9 @@ declare module "@nuxt/types" {
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
 
         /**
-         * Calls Flespi API to get the list of all active channels
-         */
-        $getChannelList(): Promise<Channel[]>
-
-        /**
          * Calls Flespi API to get the list of all connected devices
          */
-        $getAllDevices(): Promise<Device[]>
+        $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
     interface Context {
@@ -55,14 +45,9 @@ declare module "@nuxt/types" {
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
 
         /**
-         * Calls Flespi API to get the list of all active channels
-         */
-        $getChannelList(): Promise<Channel[]>
-
-        /**
          * Calls Flespi API to get the list of all connected devices
          */
-        $getAllDevices(): Promise<Device[]>
+        $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
@@ -78,14 +63,9 @@ declare module "vuex/types/index" {
         $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
 
         /**
-         * Calls Flespi API to get the list of all active channels
-         */
-        $getChannelList(): Promise<Channel[]>
-
-        /**
          * Calls Flespi API to get the list of all connected devices
          */
-        $getAllDevices(): Promise<Device[]>
+        $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
@@ -170,36 +150,9 @@ function emitNewCoordinates (id: string, position: Position): void {
 }
 
 /**
- * Calls Flespi API to get the list of all active channels
- */
-async function getAllChannels (): Promise<Channel[]> {
-    // Token needed to authenticate in Flespi
-    const token: string = "FlespiToken " + process.env.FLESPI_KEY;
-    const channels: Channel[] = [];
-
-    // Get the data via the API
-    const pendingResponse = await fetch(
-        "https://flespi.io/gw/channels/all",
-        {
-            headers: {
-                Authorization: token
-            }
-        }
-    );
-
-    const json = await pendingResponse.json();
-
-    for (let i = 0; i < json.result.length; i++) {
-        channels.push(json.result[i]);
-    }
-
-    return channels;
-}
-
-/**
  * Calls Flespi API to get the list of all connected devices
  */
-async function getAllDevices (): Promise<Device[]> {
+async function getDeviceList (): Promise<Device[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
 
@@ -215,19 +168,13 @@ async function getAllDevices (): Promise<Device[]> {
 
     const json = await pendingResponse.json();
 
-    return json.result
-        .map((
-            device: any) => (
-                {
-                    name: device.name,
-                    id: device.configuration.ident
-                }
-            )
-        );
+    return json.result.map((device: any) => ({
+        name: device.name,
+        id: device.configuration.ident
+    }));
 }
 
 function handleNewPosition (client: MqttClient, result: GeolocationPosition): void {
-    console.log("result", result);
     const data = {
         ident: client.options.clientId || generateRandomId(10),
         timestamp: result.timestamp / 1000,
@@ -235,7 +182,6 @@ function handleNewPosition (client: MqttClient, result: GeolocationPosition): vo
         "position.longitude": result.coords.longitude,
         "position.altitude": result.coords.altitude
     };
-    console.log("data", data);
     sendLocationData(client, data);
 }
 
@@ -253,8 +199,7 @@ function generateRandomId (length: number): string {
 const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", createClient);
     inject("getPositionData", setupClient);
-    inject("getChannelList", getAllChannels);
-    inject("getAllDevices", getAllDevices);
+    inject("getDeviceList", getDeviceList);
     inject("handleUpdatedPosition", handleNewPosition);
 };
 
