@@ -3,47 +3,6 @@ import { Context, Plugin } from "@nuxt/types";
 import Vue from "vue";
 import { Inject } from "@nuxt/types/app";
 
-/// Models
-/**
- * Position interface to get position data from a tracker
- */
-export interface Position {
-    altitude?: number,
-    direction?: number,
-    hdop?: number,
-    latitude: number,
-    longitude: number,
-    pdop?: number,
-    satellites?: number,
-    speed?: number,
-    valid?: boolean,
-    timestamp?: number
-}
-
-export interface LocationData {
-    ident: string,
-    timestamp: number,
-    "position.longitude": number,
-    "position.latitude": number,
-    "position.altitude": number | null
-}
-
-/**
- * A channel from Flespi
- */
-export interface Channel {
-    id: number,
-    name: string
-}
-
-/**
- * A device connected to Flespi
- */
-export interface Device {
-    id: number,
-    name: string
-}
-
 /// Modules declaration
 declare module "vue/types/vue" {
     interface Vue {
