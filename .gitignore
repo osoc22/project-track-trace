@@ -195,7 +195,6 @@ dist
 ### Vuejs ###
 # Recommended template: Node.gitignore
 
-node_modules/
 dist/
 npm-debug.log
 yarn-error.log
@@ -232,9 +231,6 @@ yarn-error.log
 # End of https://www.toptal.com/developers/gitignore/api/linux
 # Created by https://www.toptal.com/developers/gitignore/api/dotenv
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotenv
-
-### dotenv ###
-.env
 
 # End of https://www.toptal.com/developers/gitignore/api/dotenv
 # Created by https://www.toptal.com/developers/gitignore/api/jetbrains+all

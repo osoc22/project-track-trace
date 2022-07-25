@@ -28,7 +28,7 @@ const config: NuxtConfig = {
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 	plugins: [
         "@/plugins/vueLayers.js",
-		"~/plugins/flespiConnector.ts",
+		"~/plugins/flespi/flespiPlugin.ts",
 		"~/plugins/bootstrapVue.ts"
 	],
 
