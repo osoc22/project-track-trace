@@ -29,12 +29,6 @@ import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import { eventBus } from "~/plugins/flespiConnector";
 import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
 
-interface PositionData {
-  id: string,
-  latitude: number,
-  longitude: number
-}
-
 export default Vue.extend({
   name: "IndexPage",
   components: { TrackedAssetCard, VueLayerMarker, DualFlyOut },
