@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { toLonLat } from "ol/proj";
 
 export default defineComponent({
     name: "VueLayerMarker",
@@ -55,13 +56,17 @@ export default defineComponent({
       };
     },
     methods: {
+      /**
+       * gets called upon selecting any marker
+       * @param e - the 'event' sent, it looks like {type:string, feature: Feature } where feature is a VueLayers feature
+       */
       onSelect (e : any) {
         /*
          * WARNING: the needed coordinates are regular long/lat (°N °E)
          * BE SURE TO CONVERT
          */
-        e.feature.getGeometry().transform("EPSG:3857", "EPSG:4326");
         const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
+        const lonlat = toLonLat(markerCoords);
         // TODO - properly document in our docs
         /*
          * WARNING: the object that calls the event is NOT necesarily the correct component for the marker we clicked on
@@ -75,12 +80,7 @@ export default defineComponent({
         const timestamp : Date = new Date(f.timestamp * 1000);
         const tsString : string = timestamp.toLocaleString();
         const details = { id: f.id, longitude: f.longitude, latitude: f.latitude, timestamp: tsString };
-        this.$root.$emit("popup-toggled", markerCoords, details);
-        /*
-         * console.log(this.displayDetails, this.details, this.coordinates);
-         * re-transform to avoid disappearing markers
-         */
-        e.feature.getGeometry().transform("EPSG:4326", "EPSG:3857");
+        this.$root.$emit("popup-toggled", lonlat, details);
       },
       onDeselect () {
         this.$root.$emit("popup-hide");

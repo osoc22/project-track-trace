@@ -55,9 +55,7 @@ export default defineComponent({
       });
     },
     methods: {
-      toggleDetails () {
-        console.log("toggling details");
-      }
+      toggleDetails () {}
     }
 });
 </script>

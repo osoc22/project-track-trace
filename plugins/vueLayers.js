@@ -4,9 +4,8 @@
  */
 
 import Vue from "vue";
-import VueLayers from "vuelayers";
+import VueLayers, { SelectInteraction } from "vuelayers";
 import "vuelayers/dist/vuelayers.css"; // needs css-loader
-import { SelectInteraction } from "vuelayers";
 
 Vue.use(VueLayers);
 Vue.use(SelectInteraction);
