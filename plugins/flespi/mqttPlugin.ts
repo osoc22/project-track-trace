@@ -1,23 +1,10 @@
 import { connect, MqttClient } from "mqtt";
-import { Context, Plugin } from "@nuxt/types";
-import { Inject } from "@nuxt/types/app";
 import { eventBus, generateRandomId } from "~/plugins/utils";
-
-/// Modules declaration
-declare module "vue/types/vue" {
-    interface Vue {
-        /**
-         * Connects to Flespi client and fetch position data.
-         * @returns The mqtt client connected to Flespi
-         */
-        $initiateClient(): MqttClient
-    }
-}
 
 /**
  * Creating and connecting Flespi client
  */
-function createClient (): MqttClient {
+export function createClient (): MqttClient {
     const client = connect("wss://mqtt.flespi.io", {
         clientId: generateRandomId(10),
         // see https://flespi.com/kb/tokens-access-keys-to-flespi-platform to read about flespi tokens
@@ -92,12 +79,3 @@ function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
 function emitNewCoordinates (position: Position): void {
     eventBus.$emit("newCoordinates", position);
 }
-
-/**
- * Method plugin
- */
-const plugin: Plugin = (_context: Context, inject: Inject) => {
-    inject("initiateClient", createClient);
-};
-
-export default plugin;
