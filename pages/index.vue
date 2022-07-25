@@ -5,6 +5,8 @@
         <div class="d-flex flex-column align-items-start container">
           <phone-tracking-button class="my-1 w-100" :client="client" />
           <!-- <fly-out-button v-b-toggle.secondary-panel /> -->
+            <tracked-asset-card v-for="position in positions" :key="position.id" :position="position"
+                                :device="devices.find(device => device.id === position.id)"/>
         </div>
       </template>
       <template #secondary>
@@ -34,10 +36,11 @@ import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import { eventBus } from "~/plugins/flespiConnector";
+import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
 
 export default Vue.extend({
   name: "IndexPage",
-  components: { VueLayerMarker, DualFlyOut },
+  components: { TrackedAssetCard, VueLayerMarker, DualFlyOut },
   data () {
     return {
       positions: [] as Array<Position>,
@@ -50,7 +53,6 @@ export default Vue.extend({
   async fetch () {
     // Gets the list of devices from flespi
     this.devices = await this.$getDeviceList();
-    console.log(this.devices);
   },
   fetchOnServer: false,
   created () {

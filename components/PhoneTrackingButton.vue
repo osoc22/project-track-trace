@@ -32,16 +32,18 @@ export default defineComponent({
   },
   methods: {
     StartTracking () {
-        this.tracking = true;
         this.watcherId = navigator.geolocation.watchPosition((result) => {
-            this.$handleUpdatedPosition(this.client, result);
-        });
-        this.$bvToast.toast("You are being tracked.", {
-            title: "Paradar message",
-            autoHideDelay: 3000,
-            variant: "danger",
-            solid: true,
-            toaster: "b-toaster-top-center"
+          if (!this.tracking) {
+            this.$bvToast.toast("You are being tracked.", {
+              title: "Paradar message",
+              autoHideDelay: 3000,
+              variant: "danger",
+              solid: true,
+              toaster: "b-toaster-top-center"
+            });
+            this.tracking = true;
+          }
+          this.$handleUpdatedPosition(this.client, result);
         });
     },
     StopTracking () {
@@ -62,10 +64,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .btn {
-    width: fit-content;
-    display: flex;
-    flex-flow: row nowrap;
-    min-width: max-content;
+    width: 100%;
     gap: 0.5rem;
     p {
         margin: 0;

@@ -12,6 +12,10 @@ declare module "vue/types/vue" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
         $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
@@ -25,6 +29,10 @@ declare module "@nuxt/types" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
         $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
@@ -35,6 +43,10 @@ declare module "@nuxt/types" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, channels: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
         $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
@@ -49,6 +61,10 @@ declare module "vuex/types/index" {
          */
         $initiateClient(): MqttClient
         $getPositionData(client: MqttClient, devices: Channel[]): MqttClient
+
+        /**
+         * Calls Flespi API to get the list of all connected devices
+         */
         $getDeviceList(): Promise<Device[]>
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
@@ -141,9 +157,9 @@ function emitNewCoordinates (position: Position): void {
 }
 
 /**
- * Calls Flespi API to get the list of all active devices
+ * Calls Flespi API to get the list of all connected devices
  */
-async function getDevices (): Promise<Device[]> {
+async function getDeviceList (): Promise<Device[]> {
     // Token needed to authenticate in Flespi
     const token: string = "FlespiToken " + process.env.FLESPI_KEY;
 
@@ -190,7 +206,7 @@ function generateRandomId (length: number): string {
 const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", createClient);
     inject("getPositionData", setupClient);
-    inject("getDeviceList", getDevices);
+    inject("getDeviceList", getDeviceList);
     inject("handleUpdatedPosition", handleNewPosition);
 };
 
