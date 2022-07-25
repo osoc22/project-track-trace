@@ -21,9 +21,6 @@
         />
       </vl-style>
     </vl-feature>
-    <vl-feature :properties="details">
-      <vl-geom-point :coordinates="coordinates" />
-    </vl-feature>
   </div>
 </template>
 
