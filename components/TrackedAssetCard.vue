@@ -22,7 +22,7 @@
         },
         methods: {
             centerMap (position: number[]): void {
-                eventBus.$emit("centerMapOnTrackedAsset", [position[1], position[2]]);
+                eventBus.$emit("centerMapOnTrackedAsset", position);
             }
         }
     });
