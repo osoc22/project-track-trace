@@ -5,8 +5,8 @@
   </b-button>
 </template>
 
-<link href="toastr.css" rel="stylesheet"/>
-<script src="toastr.js"/>
+<link href="toastr.css" rel="stylesheet" />
+<script src="toastr.js" />
 
 <script lang="ts">
 import { defineComponent } from "vue";
