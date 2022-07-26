@@ -10,7 +10,7 @@
         />
       </vl-style>
     </vl-interaction-select>
-    <vl-feature :properties="details">
+    <vl-feature :properties="{details, device}">
       <vl-geom-point :coordinates="coordinates" />
       <vl-style>
         <vl-style-icon
@@ -27,6 +27,11 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { toLonLat } from "ol/proj";
+
+interface Properties {
+  device?: Device,
+  details: Position
+}
 
 export default defineComponent({
     name: "VueLayerMarker",
@@ -47,9 +52,9 @@ export default defineComponent({
           type: Object as PropType<Position>,
           default: () => {}
         },
-        devices: {
-          type: Array as PropType<Device[]>,
-          default: () => []
+        device: {
+          type: Object as PropType<Device>,
+          default: () => undefined
         }
     },
     emits: ["popup-toggled"],
@@ -79,22 +84,23 @@ export default defineComponent({
          *
          * We blame this behaviour on VueLayers being quirky.
          */
-        const f: Position = e.feature.getProperties();
-        const device = this.devices.find(device => device.id === f.id);
+        const featureProps: Properties = e.feature.getProperties();
+        const positionInfo = featureProps.details;
+        const device = featureProps.device;
         // convert timestamp to readable format
-        const timestamp : Date = new Date(f.timestamp * 1000);
+        const timestamp : Date = new Date(positionInfo.timestamp * 1000);
         const tsString : string = timestamp.toLocaleString();
         const details = Object.fromEntries(Object.entries({
-          id: device ? device.name : f.id,
-          longitude: f.longitude,
-          latitude: f.latitude,
-          "Battery Level": f.batteryLevel,
+          id: positionInfo.id,
+          longitude: positionInfo.longitude,
+          latitude: positionInfo.latitude,
+          "Battery Level": positionInfo.batteryLevel,
           "Last Received Data": tsString
         }).filter(([_key, value]) => value));
-        if (f.movementStatus) {
+        if (positionInfo.movementStatus) {
           details.Moving = undefined;
         }
-        this.$root.$emit("popup-toggled", lonlat, details, f.alarmEvent);
+        this.$root.$emit("popup-toggled", lonlat, details, positionInfo.alarmEvent, device?.name);
       },
       onDeselect () {
         this.$root.$emit("popup-hide");

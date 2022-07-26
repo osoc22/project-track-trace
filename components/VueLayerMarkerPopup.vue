@@ -2,6 +2,9 @@
   <div v-if="display">
     <vl-overlay :position="position">
       <div class="overlay-content">
+        <h5 v-if="name" :class="attention ? 'ml-2 mr-2 mt-1 attention' : 'ml-2 mr-2 mt-1'">
+          {{ name }}
+        </h5>
         <h6 v-for="(item, index) in details" :key="index" :class="attention ? 'ml-2 mr-2 attention' : 'ml-2 mr-2'">
           {{ index }}
           <p class="lead">
@@ -41,15 +44,17 @@ export default defineComponent({
             // WARNING: this position is regular long/lat (°N °E) BE SURE TO CONVERT
             position: this.initPosition,
             details: this.initDetails,
-            attention: false
+            attention: false,
+            name: "" as string | undefined
         };
     },
     mounted () {
-        this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object, alarmEvent: boolean) => {
+        this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object, alarmEvent: boolean, name?: string) => {
             this.display = true;
             this.position = coordinates;
             this.details = details;
             this.attention = alarmEvent;
+            this.name = name;
       });
       this.$root.$on("popup-hide", () => {
         this.display = false;
@@ -74,6 +79,7 @@ export default defineComponent({
     .lead{
         font-size: 16px;
         margin-bottom: 0;
+        display: inline-block;
     }
 
     .btn:focus,.btn:active{
