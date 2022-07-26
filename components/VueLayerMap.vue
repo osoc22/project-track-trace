@@ -27,8 +27,8 @@ import { fromLonLat, toLonLat } from "ol/proj";
 import { eventBus } from "~/plugins/utils";
 
 interface Properties {
-  device?: Device,
-  details: Position
+  device?: Device, // If the name is unknown to Flespi, device will be undefined
+  position: Position
 }
 
 export default defineComponent({
@@ -68,18 +68,18 @@ export default defineComponent({
         };
     },
     mounted () {
+        // center and zoom in on the clicked marker
         eventBus.$on("centerMapOnTrackedAsset", (position: number[]) => {
             const view: View = (this.$refs.vlview as any).$view;
             view.animate({ center: fromLonLat(position), zoom: 18 });
         });
     },
     methods: {
-        /**
-         * gets called upon selecting any marker
-         * @param e - the 'event' sent, it looks like {type:string, feature: Feature } where feature is a VueLayers feature
-         */
+      /**
+       * gets called upon selecting any marker
+       * @param e - the 'event' sent, it looks like {type:string, feature: Feature } where feature is a VueLayers feature
+       */
       onSelect (e : any) {
-        // TODO - properly document in our docs
         /*
          * WARNING: the object that calls the event is NOT necesarily the correct component for the marker we clicked on
          * due to this behaviour, we cannot just pass this.details. We use the properties stored in the vl-feature of the component
@@ -88,35 +88,34 @@ export default defineComponent({
          * We blame this behaviour on VueLayers being quirky.
          */
         const featureProps: Properties = e.feature.getProperties();
-        const positionInfo = featureProps.details;
+        const position = featureProps.position;
         const device = featureProps.device;
         /*
          * set the selectIcon - slower than the onselect triggering, so we see the 'wrong' icon for a 0.5s (+-until zoomed in)
-         * TODO - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
+         * BUG - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
          */
-        positionInfo.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
+        position.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
         // convert timestamp to readable format
-        const timestamp : Date = new Date(positionInfo.timestamp * 1000);
+        const timestamp : Date = new Date(position.timestamp * 1000);
         const tsString : string = timestamp.toLocaleString();
-        /*
-         * WARNING: the needed coordinates are regular long/lat (°N °E)
-         * BE SURE TO CONVERT
-         */
+        // Get the coordinates in Longitude Latitude format for display
         const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
         const lonlat = toLonLat(markerCoords);
+
         const details = Object.fromEntries(Object.entries({
-          ID: positionInfo.id,
-          Longitude: positionInfo.longitude,
-          Latitude: positionInfo.latitude,
-          "Battery Level": positionInfo.batteryLevel,
+          ID: position.id,
+          Longitude: position.longitude,
+          Latitude: position.latitude,
+          "Battery Level": position.batteryLevel,
           "Last Received Data": tsString
         }).filter(([_key, value]) => value));
-        if (positionInfo.movementStatus) {
+        // if the tracked device is moving display it on popup
+        if (position.movementStatus) {
           details.Moving = undefined;
         }
         // smooth zoom into tracker location
         eventBus.$emit("centerMapOnTrackedAsset", lonlat);
-        this.$root.$emit("popup-toggled", lonlat, details, positionInfo.alarmEvent, device?.name);
+        this.$root.$emit("popup-toggled", lonlat, details, position.alarmEvent, device?.name);
       },
       onDeselect () {
         this.$root.$emit("popup-hide");

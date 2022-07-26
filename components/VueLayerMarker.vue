@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vl-feature :properties="{details, device}">
+    <vl-feature :properties="{position, device}">
       <vl-geom-point :coordinates="coordinates" />
       <vl-style>
         <vl-style-icon
@@ -35,7 +35,7 @@ export default defineComponent({
           type: Array,
           default: () => [0.5, 0.75]
         },
-        details: {
+        position: {
           type: Object as PropType<Position>,
           default: () => {}
         },
@@ -44,7 +44,6 @@ export default defineComponent({
           default: () => undefined
         }
     },
-    emits: ["popup-toggled"],
     data () {
       return {
         iconSrc: this.src

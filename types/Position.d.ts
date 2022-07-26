@@ -1,3 +1,7 @@
+/**
+ * This is the data received from Flespi
+ * Questionmarks are mostly data that the phone does not have
+ */
 declare type Position = {
     altitude?: number,
     direction?: number,

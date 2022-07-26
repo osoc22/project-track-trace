@@ -44,11 +44,12 @@ export default defineComponent({
             // WARNING: this position is regular long/lat (°N °E) BE SURE TO CONVERT
             position: this.initPosition,
             details: this.initDetails,
-            attention: false,
+            attention: false, // when alarm event was sent, this marker needs attention
             name: "" as string | undefined
         };
     },
     mounted () {
+        // Display popup on global event
         this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object, alarmEvent: boolean, name?: string) => {
             this.display = true;
             this.position = coordinates;
@@ -56,14 +57,18 @@ export default defineComponent({
             this.attention = alarmEvent;
             this.name = name;
       });
+      // Hide popup on global event
       this.$root.$on("popup-hide", () => {
         this.display = false;
         this.position = [0, 0];
       });
-    },
-    methods: {
-      toggleDetails () {}
     }
+    /**
+     * Placeholder to toggle details on the right side of the window
+     * methods: {
+     *   toggleDetails () {}
+     * }
+     */
 });
 </script>
 

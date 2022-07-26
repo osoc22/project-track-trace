@@ -24,7 +24,7 @@
         <vue-layer-marker
           v-for="position in positions"
           :key="position.id"
-          :details="position"
+          :position="position"
           :coordinates="[position.longitude, position.latitude]"
           :src="position.id.includes('sp_') ? '/phone.png' : '/marker.png'"
           :select-src="position.id.includes('sp_') ? '/phone-selected.png' : '/marker-selected.png'"
@@ -51,11 +51,11 @@ export default Vue.extend({
   components: { TrackedAssetCard, VueLayerMarker, DualFlyOut, VueLayerMarkerPopup },
   data () {
     return {
-      positions: [] as Array<Position>,
+      positions: [] as Array<Position>, // Details about the tracked devices
       zoom: 6,
       client: this.$initiateClient(), // Initiate the client
       center: [4.3572, 50.8476],
-      devices: [] as Array<Device>
+      devices: [] as Array<Device> // List of connected named devices
     };
   },
   async fetch () {
@@ -64,14 +64,22 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   created () {
+    // When new Position data is received, store it in the positions array
     eventBus.$on("newCoordinates", (data: Position) => {
       const currentData = this.positions.filter(pos => pos.id === data.id);
+      // check if this id already exists and update, else push
       if (currentData.length > 0) {
         this.positions[this.positions.indexOf(currentData[0])] = data;
       } else {
         this.positions.push(data);
       }
     });
+
+    /**
+     * Remove tracker when it doesn't send data for too long (max 120 seconds)
+     * Calls this function every minute,
+     * and removes tracker if it hasn't send any new data for more than a minute
+     */
     setInterval(() => {
       this.positions.forEach((position, index) => {
         if (Math.abs(position.timestamp - Date.now() / 1000) >= 60) {
@@ -80,6 +88,7 @@ export default Vue.extend({
       });
     }, 60000);
   },
+  // disconnects client when application is closed
   beforeDestroy () {
     this.client.end(true);
   }

@@ -1,53 +1,3 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "DualFlyOut",
-  props: {
-    primaryVisibility: {
-      type: Boolean,
-      default: false
-    },
-    secondaryVisibility: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["primaryChange", "secondaryChange"],
-  data () {
-      return {
-          primaryOpen: this.primaryVisibility,
-          secondaryOpen: this.secondaryVisibility,
-          windowWidth: 0
-      };
-  },
-  beforeDestroy () {
-    window.removeEventListener("resize", this.onResize);
-  },
-  mounted () {
-    this.windowWidth = window.innerWidth;
-    window.addEventListener("resize", this.onResize);
-  },
-  methods: {
-    handlePrimaryPanel (opened:boolean) {
-      if (this.secondaryOpen && opened && this.windowWidth < 992) {
-        this.secondaryOpen = false;
-      }
-      this.primaryOpen = opened;
-      this.$emit("primaryChange", opened);
-    },
-    handleSecondaryPanel (opened:boolean) {
-      if (this.primaryOpen && opened && this.windowWidth < 992) {
-        this.primaryOpen = false;
-      }
-      this.secondaryOpen = opened;
-      this.$emit("secondaryChange", opened);
-    },
-    onResize () {
-      this.windowWidth = window.innerWidth;
-    }
-  }
-});
-</script>
 <template>
   <div id="flyout-wrapper">
     <fly-out-button v-b-toggle.primary-panel class="menu-button" />
@@ -83,6 +33,61 @@ export default defineComponent({
     </b-sidebar>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "DualFlyOut",
+  props: {
+    primaryVisibility: { // visibility of left hand panel
+      type: Boolean,
+      default: false
+    },
+    secondaryVisibility: { // visibility of right hand panel, the button for this is disabled
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["primaryChange", "secondaryChange"],
+  data () {
+      return {
+          primaryOpen: this.primaryVisibility,
+          secondaryOpen: this.secondaryVisibility,
+          windowWidth: 0
+      };
+  },
+  beforeDestroy () {
+    window.removeEventListener("resize", this.onResize);
+  },
+  mounted () {
+    // we need the window width to decide what panels are open
+    this.windowWidth = window.innerWidth;
+    window.addEventListener("resize", this.onResize);
+  },
+  methods: {
+    handlePrimaryPanel (opened:boolean) {
+      if (this.secondaryOpen && opened && this.windowWidth < 992) {
+        // close the secondary panel when you want to open the primary one, but the screen is to narrow
+        this.secondaryOpen = false;
+      }
+      this.primaryOpen = opened;
+      this.$emit("primaryChange", opened);
+    },
+    handleSecondaryPanel (opened:boolean) {
+      if (this.primaryOpen && opened && this.windowWidth < 992) {
+        // close the primary panel when you want to open the secondary one, but the screen is to narrow
+        this.primaryOpen = false;
+      }
+      this.secondaryOpen = opened;
+      this.$emit("secondaryChange", opened);
+    },
+    onResize () {
+      this.windowWidth = window.innerWidth;
+    }
+  }
+});
+</script>
 
 <style lang="scss" scoped>
 .menu-button{

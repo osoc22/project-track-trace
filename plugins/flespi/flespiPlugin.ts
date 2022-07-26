@@ -13,13 +13,22 @@ declare module "vue/types/vue" {
          * @returns The mqtt client connected to Flespi
          */
         $initiateClient(): MqttClient
+        /**
+         * Gets the list of all connected Flespi devices
+         * @returns list of all connected Flespi devices
+         */
         $getDeviceList(): Promise<Device[]>
+        /**
+         * Sends new locationdata from the client device to Flespi
+         * @param client - the MqttClient used to send data
+         * @param result - the new location of the client device
+         */
         $handleUpdatedPosition(client: MqttClient, result: GeolocationPosition): void
     }
 }
 
 /**
- * Method plugin
+ * Method plugin (ref: https://nuxtjs.org/docs/directory-structure/plugins/)
  */
 const plugin: Plugin = (_context: Context, inject: Inject) => {
     inject("initiateClient", createClient);
