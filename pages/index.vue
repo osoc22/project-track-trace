@@ -22,14 +22,15 @@
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
         <vue-layer-marker
-          v-for="pos in positions"
-          :key="pos.id"
-          :details="pos"
-          :coordinates="[pos.longitude, pos.latitude]"
-          :src="pos.id.includes('sp_') ? '/phone.png' : '/marker.png'"
-          :select-src="pos.id.includes('sp_') ? '/phone-selected.png' : '/marker-selected.png'"
+          v-for="position in positions"
+          :key="position.id"
+          :details="position"
+          :coordinates="[position.longitude, position.latitude]"
+          :src="position.id.includes('sp_') ? '/phone.png' : '/marker.png'"
+          :select-src="position.id.includes('sp_') ? '/phone-selected.png' : '/marker-selected.png'"
           :scale="0.15"
-          :anchor="pos.id.includes('sp_') ? [0.5, 0.75] : [0.5, 0.75]"
+          :anchor="position.id.includes('sp_') ? [0.5, 0.75] : [0.5, 0.75]"
+          :device="devices.find(device => device.id === position.id)"
         />
         <VueLayerMarkerPopup />
       </template>

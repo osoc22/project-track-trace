@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vl-feature :properties="details">
+    <vl-feature :properties="{details, device}">
       <vl-geom-point :coordinates="coordinates" />
       <vl-style>
         <vl-style-icon
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
     name: "VueLayerMarker",
@@ -35,9 +35,13 @@ export default defineComponent({
           type: Array,
           default: () => [0.5, 0.75]
         },
-        details: { // ToDo - define positionData object like index.vue (or re-use that one by referencing it, somehow)
-          type: Object,
+        details: {
+          type: Object as PropType<Position>,
           default: () => {}
+        },
+        device: {
+          type: Object as PropType<Device>,
+          default: () => undefined
         }
     },
     emits: ["popup-toggled"],

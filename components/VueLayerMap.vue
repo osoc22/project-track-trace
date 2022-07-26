@@ -26,6 +26,11 @@ import View from "ol/View";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { eventBus } from "~/plugins/utils";
 
+interface Properties {
+  device?: Device,
+  details: Position
+}
+
 export default defineComponent({
     name: "VueLayerMap",
     props: {
@@ -82,14 +87,16 @@ export default defineComponent({
          *
          * We blame this behaviour on VueLayers being quirky.
          */
-        const f = e.feature.getProperties();
+        const featureProps: Properties = e.feature.getProperties();
+        const positionInfo = featureProps.details;
+        const device = featureProps.device;
         /*
          * set the selectIcon - slower than the onselect triggering, so we see the 'wrong' icon for a 0.5s (+-until zoomed in)
          * TODO - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
          */
-        f.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
+        positionInfo.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
         // convert timestamp to readable format
-        const timestamp : Date = new Date(f.timestamp * 1000);
+        const timestamp : Date = new Date(positionInfo.timestamp * 1000);
         const tsString : string = timestamp.toLocaleString();
         /*
          * WARNING: the needed coordinates are regular long/lat (°N °E)
@@ -97,10 +104,19 @@ export default defineComponent({
          */
         const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
         const lonlat = toLonLat(markerCoords);
-        const details = { id: f.id, longitude: f.longitude, latitude: f.latitude, timestamp: tsString };
+        const details = Object.fromEntries(Object.entries({
+          ID: positionInfo.id,
+          Longitude: positionInfo.longitude,
+          Latitude: positionInfo.latitude,
+          "Battery Level": positionInfo.batteryLevel,
+          "Last Received Data": tsString
+        }).filter(([_key, value]) => value));
+        if (positionInfo.movementStatus) {
+          details.Moving = undefined;
+        }
         // smooth zoom into tracker location
         eventBus.$emit("centerMapOnTrackedAsset", lonlat);
-        this.$root.$emit("popup-toggled", lonlat, details);
+        this.$root.$emit("popup-toggled", lonlat, details, positionInfo.alarmEvent, device?.name);
       },
       onDeselect () {
         this.$root.$emit("popup-hide");
