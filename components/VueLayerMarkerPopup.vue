@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { eventBus } from "~/plugins/utils";
 
 export default defineComponent({
     name: "VueLayerMarkerPopup",
@@ -59,6 +60,18 @@ export default defineComponent({
       this.$root.$on("popup-hide", () => {
         this.display = false;
         this.position = [0, 0];
+      });
+      /**
+       * when any coordinates are updated, we check if the updated data is linked to the current popup.
+       * If it is, and we're displaying the popup, we also need to update its
+       * TODO find out why this updates more often/more quickly than our marker location ?
+       */
+      eventBus.$on("newCoordinates", (data: Position) => {
+        if (this.details && this.display) {
+          if (this.details.ID === data.id) {
+            this.position = [data.longitude, data.latitude];
+          }
+        }
       });
     },
     methods: {
