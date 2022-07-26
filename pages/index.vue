@@ -30,6 +30,7 @@
           :scale="0.1"
           :anchor="position.id.includes('sp_') ? [0.5, 0.5] : [0.5, 450]"
           :anchor-y-mode="position.id.includes('sp_') ? 'fraction' : 'pixels'"
+          :device="devices.find(device => device.id === position.id)"
         />
         <VueLayerMarkerPopup />
       </template>

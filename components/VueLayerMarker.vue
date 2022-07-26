@@ -111,9 +111,9 @@ export default defineComponent({
         const timestamp : Date = new Date(positionInfo.timestamp * 1000);
         const tsString : string = timestamp.toLocaleString();
         const details = Object.fromEntries(Object.entries({
-          id: positionInfo.id,
-          longitude: positionInfo.longitude,
-          latitude: positionInfo.latitude,
+          ID: positionInfo.id,
+          Longitude: positionInfo.longitude,
+          Latitude: positionInfo.latitude,
           "Battery Level": positionInfo.batteryLevel,
           "Last Received Data": tsString
         }).filter(([_key, value]) => value));
