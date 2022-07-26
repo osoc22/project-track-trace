@@ -67,8 +67,25 @@ export default defineComponent({
        */
       eventBus.$on("newCoordinates", (data: Position) => {
         if (this.details && this.display) {
+          // if the data ID is the same as the current popup ID
           if (this.details.ID === data.id) {
+            // We update the position
             this.position = [data.longitude, data.latitude];
+            // convert timestamp to readable format
+            const timestamp : Date = new Date(data.timestamp * 1000);
+            const tsString : string = timestamp.toLocaleString();
+            // update popup details when the attached asset has sent an update
+            const details = Object.fromEntries(Object.entries({
+              ID: data.id,
+              Longitude: data.longitude,
+              Latitude: data.latitude,
+              "Battery Level": data.batteryLevel,
+              "Last Received Data": tsString
+            }).filter(([_key, value]) => value));
+            if (data.movementStatus) {
+              details.Moving = undefined;
+            }
+            this.details = details;
           }
         }
       });
