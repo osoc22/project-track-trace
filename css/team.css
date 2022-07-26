@@ -1,0 +1,21 @@
+.team__images {
+    border-radius: 50%;
+}
+
+.team__socials {
+    border-radius: 50%;
+    background-color: #f14a3b;
+    padding: 0.35rem;
+    width: 2rem;
+    height: 2rem;
+    display: inline-block;
+    color: white;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    margin-right: 1rem;
+}
+
+.team__socials:hover {
+    transform: scale(1.2);
+    padding: 0.32rem;
+}
