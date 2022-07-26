@@ -32,7 +32,7 @@
           :anchor="position.id.includes('sp_') ? [0.5, 0.75] : [0.5, 0.75]"
           :device="devices.find(device => device.id === position.id)"
         />
-        <VueLayerMarkerPopup />
+        <vue-layer-marker-popup />
       </template>
     </vue-layer-map>
   </div>
@@ -40,8 +40,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import VueLayerMarker from "~/components/VueLayerMarker.vue";
-import VueLayerMarkerPopup from "~/components/VueLayerMarkerPopup.vue";
+import VueLayerMarker from "~/components/VueLayers/VueLayerMarker.vue";
+import VueLayerMarkerPopup from "~/components/VueLayers/VueLayerMarkerPopup.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
 import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
 import { eventBus } from "~/plugins/utils";
