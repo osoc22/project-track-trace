@@ -24,6 +24,7 @@
         <vue-layer-marker
           v-for="position in positions"
           :key="position.id"
+          :coordinates="[position.longitude, position.latitude]"
           :details="position"
           :src="position.id.includes('sp_') ? '/phone.png' : '/marker.png'"
           :select-src="position.id.includes('sp_') ? '/phone-selected.png' : '/marker-selected.png'"
