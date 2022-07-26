@@ -50,11 +50,11 @@ export default defineComponent({
         };
     },
     mounted () {
-        this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object, alarmEvent: boolean, name?: string) => {
+        this.$root.$on("popup-toggled", (positionInfo: Position, name?: string) => {
             this.display = true;
-            this.position = coordinates;
-            this.details = details;
-            this.attention = alarmEvent;
+            this.position = [positionInfo.longitude, positionInfo.latitude];
+            this.details = this.parseDetails(positionInfo);
+            this.attention = !!positionInfo.alarmEvent;
             this.name = name;
       });
       this.$root.$on("popup-hide", () => {
@@ -71,21 +71,8 @@ export default defineComponent({
           if (this.details.ID === data.id) {
             // We update the position
             this.position = [data.longitude, data.latitude];
-            // convert timestamp to readable format
-            const timestamp : Date = new Date(data.timestamp * 1000);
-            const tsString : string = timestamp.toLocaleString();
             // update popup details when the attached asset has sent an update
-            const details = Object.fromEntries(Object.entries({
-              ID: data.id,
-              Longitude: data.longitude,
-              Latitude: data.latitude,
-              "Battery Level": data.batteryLevel,
-              "Last Received Data": tsString
-            }).filter(([_key, value]) => value));
-            if (data.movementStatus) {
-              details.Moving = undefined;
-            }
-            this.details = details;
+            this.details = this.parseDetails(data);
           }
         }
       });
@@ -96,7 +83,23 @@ export default defineComponent({
       });
     },
     methods: {
-      toggleDetails () {}
+      toggleDetails () {},
+      parseDetails (data : Position) {
+        // convert timestamp to readable format
+        const timestamp : Date = new Date(data.timestamp * 1000);
+        const tsString : string = timestamp.toLocaleString();
+        const details = Object.fromEntries(Object.entries({
+              ID: data.id,
+              Longitude: data.longitude,
+              Latitude: data.latitude,
+              "Battery Level": data.batteryLevel,
+              "Last Received Data": tsString
+            }).filter(([_key, value]) => value));
+            if (data.movementStatus) {
+              details.Moving = undefined;
+            }
+            return details;
+      }
     }
 });
 </script>
