@@ -1,12 +1,9 @@
 <template>
-  <b-button class="d-flex justify-content-center" @click="(tracking) ? StopTracking() : StartTracking()">
+  <b-button class="d-flex justify-content-center" @click="(tracking) ? stopTracking() : startTracking()">
     <b-icon-pin-map />
     <p>{{ tracking ? "Stop Tracking" : "Track me!" }}</p>
   </b-button>
 </template>
-
-<link href="toastr.css" rel="stylesheet" />
-<script src="toastr.js" />
 
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -27,11 +24,11 @@ export default defineComponent({
     };
   },
   beforeDestroy () {
-    this.StopTracking();
+    this.stopTracking();
     this.client.end(true);
   },
   methods: {
-    StartTracking () {
+    startTracking () {
         this.watcherId = navigator.geolocation.watchPosition((result) => {
           if (!this.tracking) {
             this.$bvToast.toast("You are being tracked.", {
@@ -46,7 +43,7 @@ export default defineComponent({
           this.$handleUpdatedPosition(this.client, result);
         });
     },
-    StopTracking () {
+    stopTracking () {
         this.tracking = false;
         navigator.geolocation.clearWatch(this.watcherId);
         this.watcherId = -1;

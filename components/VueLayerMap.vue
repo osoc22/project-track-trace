@@ -24,7 +24,7 @@
 import { defineComponent } from "vue";
 import View from "ol/View";
 import { fromLonLat, toLonLat } from "ol/proj";
-import { eventBus } from "~/plugins/flespiConnector";
+import { eventBus } from "~/plugins/utils";
 
 export default defineComponent({
     name: "VueLayerMap",
