@@ -74,7 +74,8 @@ export default Vue.extend({
     setInterval(() => {
       this.positions.forEach((position, index) => {
         if (Math.abs(position.timestamp - Date.now() / 1000) >= 60) {
-          this.positions.splice(index, 1);
+          const removedElement = this.positions.splice(index, 1)[0];
+          eventBus.$emit("removedMarker", (removedElement.id));
         }
       });
     }, 60000);

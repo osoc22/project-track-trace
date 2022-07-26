@@ -72,6 +72,11 @@ export default defineComponent({
           }
         }
       });
+      eventBus.$on("removedMarker", (elementID : string) => {
+        if (this.display && this.details.ID === elementID) {
+          this.display = false;
+        }
+      });
     },
     methods: {
       toggleDetails () {}
