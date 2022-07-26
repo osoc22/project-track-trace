@@ -6,7 +6,7 @@
 
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
-    import { eventBus } from "~/plugins/flespiConnector";
+    import { eventBus } from "~/plugins/utils";
 
     export default defineComponent({
         name: "TrackedAssetCard",
@@ -15,9 +15,9 @@
                 type: Object as PropType<Position>,
                 required: true
             },
+            // eslint-disable-next-line vue/require-default-prop
             device: {
-                type: Object as PropType<Device>,
-                required: true
+                type: Object as PropType<Device>
             }
         },
         methods: {

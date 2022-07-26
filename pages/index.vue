@@ -21,7 +21,16 @@
     </dual-fly-out>
     <vue-layer-map :initial-zoom="zoom" :initial-center="center">
       <template #features>
-        <vue-layer-marker v-for="position in positions" :key="position.id" :details="position" :device="devices.find(device => device.id === position.id)" :coordinates="[position.longitude, position.latitude]" />
+        <vue-layer-marker
+          v-for="position in positions"
+          :key="position.id"
+          :details="position"
+          :coordinates="[position.longitude, position.latitude]"
+          :src="position.id.includes('sp_') ? '/sp_marker.png' : '/teltonika_marker.png'"
+          :scale="0.1"
+          :anchor="position.id.includes('sp_') ? [0.5, 0.5] : [0.5, 450]"
+          :anchor-y-mode="position.id.includes('sp_') ? 'fraction' : 'pixels'"
+        />
         <VueLayerMarkerPopup />
       </template>
     </vue-layer-map>
@@ -33,8 +42,8 @@ import Vue from "vue";
 import VueLayerMarker from "~/components/VueLayerMarker.vue";
 import VueLayerMarkerPopup from "~/components/VueLayerMarkerPopup.vue";
 import DualFlyOut from "~/components/FlyOut/DualFlyOut.vue";
-import { eventBus } from "~/plugins/flespiConnector";
 import TrackedAssetCard from "~/components/TrackedAssetCard.vue";
+import { eventBus } from "~/plugins/utils";
 
 export default Vue.extend({
   name: "IndexPage",
