@@ -63,8 +63,7 @@ export default defineComponent({
       });
       /**
        * when any coordinates are updated, we check if the updated data is linked to the current popup.
-       * If it is, and we're displaying the popup, we also need to update its
-       * TODO find out why this updates more often/more quickly than our marker location ?
+       * If it is, and we're displaying the popup, we also need to update its location.
        */
       eventBus.$on("newCoordinates", (data: Position) => {
         if (this.details && this.display) {
