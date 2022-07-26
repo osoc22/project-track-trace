@@ -26,10 +26,10 @@
           :key="position.id"
           :details="position"
           :coordinates="[position.longitude, position.latitude]"
-          :src="position.id.includes('sp_') ? '/sp_marker.png' : '/teltonika_marker.png'"
-          :scale="0.1"
-          :anchor="position.id.includes('sp_') ? [0.5, 0.5] : [0.5, 450]"
-          :anchor-y-mode="position.id.includes('sp_') ? 'fraction' : 'pixels'"
+          :src="position.id.includes('sp_') ? '/phone.png' : '/marker.png'"
+          :select-src="position.id.includes('sp_') ? '/phone-selected.png' : '/marker-selected.png'"
+          :scale="0.15"
+          :anchor="position.id.includes('sp_') ? [0.5, 0.75] : [0.5, 0.75]"
           :device="devices.find(device => device.id === position.id)"
         />
         <VueLayerMarkerPopup />
