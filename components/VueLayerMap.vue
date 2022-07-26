@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import View from "ol/View";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat } from "ol/proj";
 import { eventBus } from "~/plugins/utils";
 
 interface Properties {
@@ -95,28 +95,10 @@ export default defineComponent({
          * TODO - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
          */
         positionInfo.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
-        // convert timestamp to readable format
-        const timestamp : Date = new Date(positionInfo.timestamp * 1000);
-        const tsString : string = timestamp.toLocaleString();
-        /*
-         * WARNING: the needed coordinates are regular long/lat (°N °E)
-         * BE SURE TO CONVERT
-         */
-        const markerCoords : Array<number> = e.feature.getGeometry().getCoordinates();
-        const lonlat = toLonLat(markerCoords);
-        const details = Object.fromEntries(Object.entries({
-          ID: positionInfo.id,
-          Longitude: positionInfo.longitude,
-          Latitude: positionInfo.latitude,
-          "Battery Level": positionInfo.batteryLevel,
-          "Last Received Data": tsString
-        }).filter(([_key, value]) => value));
-        if (positionInfo.movementStatus) {
-          details.Moving = undefined;
-        }
+        const lonlat = [positionInfo.longitude, positionInfo.latitude];
         // smooth zoom into tracker location
         eventBus.$emit("centerMapOnTrackedAsset", lonlat);
-        this.$root.$emit("popup-toggled", lonlat, details, positionInfo.alarmEvent, device?.name);
+        this.$root.$emit("popup-toggled", positionInfo, device?.name);
       },
       onDeselect () {
         this.$root.$emit("popup-hide");
