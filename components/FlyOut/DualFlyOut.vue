@@ -145,10 +145,4 @@ export default defineComponent({
     font-size: 34px !important;
   }
 }
-
-@media (max-width: 500px) {
-  #primary-panel {
-    width: 100%;
-  }
-}
 </style>
