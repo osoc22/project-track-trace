@@ -45,7 +45,7 @@ export default defineComponent({
             // WARNING: this position is regular long/lat (°N °E) BE SURE TO CONVERT
             position: this.initPosition,
             details: this.initDetails,
-            attention: false,
+            attention: false, // when alarm event was sent, this marker needs attention
             name: "" as string | undefined
         };
     },
@@ -57,6 +57,7 @@ export default defineComponent({
             this.attention = !!positionInfo.alarmEvent;
             this.name = name;
       });
+      // Hide popup on global event
       this.$root.$on("popup-hide", () => {
         this.display = false;
         this.position = [0, 0];
@@ -103,6 +104,12 @@ export default defineComponent({
             return details;
       }
     }
+    /**
+     * Placeholder to toggle details on the right side of the window
+     * methods: {
+     *   toggleDetails () {}
+     * }
+     */
 });
 </script>
 

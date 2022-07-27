@@ -27,7 +27,7 @@ import { fromLonLat } from "ol/proj";
 import { eventBus } from "~/plugins/utils";
 
 interface Properties {
-  device?: Device,
+  device?: Device, // If the name is unknown to Flespi, device will be undefined
   details: Position
 }
 
@@ -68,18 +68,18 @@ export default defineComponent({
         };
     },
     mounted () {
+        // center and zoom in on the clicked marker
         eventBus.$on("centerMapOnTrackedAsset", (position: number[]) => {
             const view: View = (this.$refs.vlview as any).$view;
             view.animate({ center: fromLonLat(position), zoom: 18 });
         });
     },
     methods: {
-        /**
-         * gets called upon selecting any marker
-         * @param e - the 'event' sent, it looks like {type:string, feature: Feature } where feature is a VueLayers feature
-         */
+      /**
+       * gets called upon selecting any marker
+       * @param e - the 'event' sent, it looks like {type:string, feature: Feature } where feature is a VueLayers feature
+       */
       onSelect (e : any) {
-        // TODO - properly document in our docs
         /*
          * WARNING: the object that calls the event is NOT necesarily the correct component for the marker we clicked on
          * due to this behaviour, we cannot just pass this.details. We use the properties stored in the vl-feature of the component
@@ -92,7 +92,7 @@ export default defineComponent({
         const device = featureProps.device;
         /*
          * set the selectIcon - slower than the onselect triggering, so we see the 'wrong' icon for a 0.5s (+-until zoomed in)
-         * TODO - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
+         * BUG - try to figure out a way to hide the selected style until this onselect function is triggered to update the icon
          */
         positionInfo.id.includes("sp_") ? this.selectIconSrc = "/phone-selected.png" : this.selectIconSrc = "/marker-selected.png";
         const lonlat = [positionInfo.longitude, positionInfo.latitude];

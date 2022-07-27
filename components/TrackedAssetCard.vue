@@ -7,7 +7,7 @@
 <script lang="ts">
     import { defineComponent, PropType } from "vue";
     import { eventBus } from "~/plugins/utils";
-
+    // Component to display one tracked device in the list of all devices in the sidebar
     export default defineComponent({
         name: "TrackedAssetCard",
         props: {
