@@ -36,7 +36,7 @@ export default defineComponent({
         if (!this.tracking) {
           this.$bvToast.toast("You are being tracked.", {
             title: "Paradar message",
-            autoHideDelay: 200000,
+            autoHideDelay: 3000,
             variant: "danger",
             solid: true,
             toaster: "b-toaster-top-center"
