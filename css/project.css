@@ -6,11 +6,10 @@
 
 .project-image {
 	padding: 1rem;
-	border: 1px solid rgba(0,0,0,0.3);
-	border-radius: 5px;
 	width: 100%;
-	background-color: rgba(0,0,0,0.03);
 	margin: 3rem 0 2rem;
+	display: flex;
+	justify-content: center;
 }
 
 	@media only screen and (min-width: 64em) {
@@ -21,10 +20,13 @@
 	}
 
 	.project-image img {
-		border: 1px solid rgba(0,0,0,0.3);
-		border-radius: 2px;
 		width: 100%;
 		background-color: white;
+	}
+
+	svg {
+		width: 60%;
+		height: 60%;
 	}
 
 /* team and partner section */
