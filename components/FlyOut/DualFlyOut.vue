@@ -2,20 +2,27 @@
   <div id="flyout-wrapper">
     <fly-out-button v-b-toggle.primary-panel class="menu-button" />
     <!--
-      Honestly, this width is on par of CSS injecting.
-      It works, but it's definitely not meant to do this, but because `width` directly injects into `style`, this can be possible.
-    -->
+          Honestly, this width is on par of CSS injecting.
+          It works, but it's definitely not meant to do this, but because `width` directly injects into `style`, this can be possible.
+        -->
     <b-sidebar
       id="primary-panel"
       ref="primaryPanel"
       class="d-flex reduced-width"
       shadow
-      title="Paradar"
       header-class="w-100"
       width="40%; max-width: 320px"
       :visible="primaryOpen"
       @change="(event) => handlePrimaryPanel(event)"
     >
+      <img
+        src="https://osoc.be/editions/2022/projects/paradar.svg"
+        width="50px"
+        alt="Paradar logo"
+      >
+      <div class="title">
+        PARADAR
+      </div>
       <slot name="primary" />
     </b-sidebar>
     <b-sidebar
@@ -36,7 +43,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 export default defineComponent({
   name: "DualFlyOut",
   props: {
@@ -66,7 +72,7 @@ export default defineComponent({
     window.addEventListener("resize", this.onResize);
   },
   methods: {
-    handlePrimaryPanel (opened:boolean) {
+    handlePrimaryPanel (opened: boolean) {
       if (this.secondaryOpen && opened && this.windowWidth < 992) {
         // close the secondary panel when you want to open the primary one, but the screen is to narrow
         this.secondaryOpen = false;
@@ -74,7 +80,7 @@ export default defineComponent({
       this.primaryOpen = opened;
       this.$emit("primaryChange", opened);
     },
-    handleSecondaryPanel (opened:boolean) {
+    handleSecondaryPanel (opened: boolean) {
       if (this.primaryOpen && opened && this.windowWidth < 992) {
         // close the primary panel when you want to open the secondary one, but the screen is to narrow
         this.primaryOpen = false;
@@ -89,11 +95,60 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.menu-button{
+<style lang="scss">
+@import "../../assets/scss/main";
+
+.b-sidebar-header,
+.b-sidebar-body {
+  background: $dark-blue;
+  color: white;
+  text-align: center;
+
+  .title {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 40px;
+  }
+}
+
+.b-sidebar-header {
+  position: absolute;
+  background: transparent;
+
+  button {
+    opacity: 1;
+
+    svg {
+      color: $paragon-green;
+      font-size: 50px;
+    }
+  }
+
+  .title {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 40px;
+  }
+}
+
+.b-sidebar-body {
+  padding-top: 3vh;
+}
+
+.menu-button {
   z-index: 2;
   position: absolute;
   left: 3em;
   top: 1em;
+  border: none;
+  border-radius: 0;
+  width: 60px;
+  height: 45px;
+  background: $dark-blue;
+
+  svg {
+    color: $paragon-green;
+    font-size: 34px !important;
+  }
 }
 </style>

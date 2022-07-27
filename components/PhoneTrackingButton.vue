@@ -1,5 +1,8 @@
 <template>
-  <b-button class="d-flex justify-content-center" @click="(tracking) ? stopTracking() : startTracking()">
+  <b-button
+    class="d-flex justify-content-center tracking-button"
+    @click="tracking ? stopTracking() : startTracking()"
+  >
     <b-icon-pin-map />
     <p>{{ tracking ? "Stop Tracking" : "Track me!" }}</p>
   </b-button>
@@ -63,12 +66,23 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.btn {
-    width: 100%;
-    gap: 0.5rem;
-    p {
-        margin: 0;
-    }
+<style lang="scss">
+@import "../assets/scss/main";
+.tracking-button {
+  border-radius: 0;
+  height: 44px;
+  font-size: 20px;
+  margin-bottom: 20px !important;
+
+  &:hover {
+    color: $paragon-green;
+    background: white;
+  }
+}
+
+.b-toaster-slot * {
+  border-radius: 0;
+  border: none;
+  font-size: 18px;
 }
 </style>

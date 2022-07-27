@@ -1,6 +1,13 @@
 <template>
-  <b-button class="d-flex justify-content-center" @click="centerMap(position)">
-    {{ device === undefined ? `Smartphone ${position.id}` : `Device ${device.name}` }}
+  <b-button
+    class="d-flex justify-content-center align-items-center"
+    @click="centerMap(position)"
+  >
+    {{
+      device === undefined
+        ? `Smartphone ${position.id}`
+        : `Device ${device.name}`
+    }}
   </b-button>
 </template>
 
@@ -29,8 +36,13 @@
 </script>
 
 <style lang="scss" scoped>
-.btn {
-    width: 100%;
-    margin-top: 0.5rem;
+button {
+  width: 100%;
+  margin-top: 0.5rem;
+  font-size: 14px;
+  height: 34px;
+  border-radius: 0;
+  background-color: #9da0a2;
+  border-color: #9da0a2;
 }
 </style>
