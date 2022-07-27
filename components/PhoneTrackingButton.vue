@@ -17,7 +17,7 @@ export default defineComponent({
   props: {
     client: {
       type: MqttClient,
-      required: true,
+      required: true
     }
   },
   data () {
