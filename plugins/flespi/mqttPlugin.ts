@@ -3,6 +3,7 @@ import { eventBus, generateRandomId } from "~/plugins/utils";
 
 /**
  * Creating and connecting Flespi client
+ * @returns the MqttClient used to send and receive data from Flespi
  */
 export function createClient (): MqttClient {
     const client = connect("wss://mqtt.flespi.io", {
@@ -13,6 +14,7 @@ export function createClient (): MqttClient {
         clean: true
     });
 
+    // Hardcode channels for prototype, see also apiPlugin
     const channels: Channel[] = [
         {
             id: 1134425,
@@ -28,25 +30,22 @@ export function createClient (): MqttClient {
 }
 
 /**
- * Creates the MqttClient to connect with Flespi
- *
+ * Sets up the MqttClient to handle messages
  * @returns the connected client
  */
 function setupClient (client: MqttClient, channels: Channel[]): MqttClient {
-    // When the client is connected, we subscribe to the telemetry topic
+    // When the client is connected, we subscribe to the channel topics
     client.on("connect", () => {
-        console.log("Connected...");
         channels.forEach((channel: Channel) => {
-            client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (err: Error) => {
-                if (err) {
-                    client.end(true); // force disconnect
+            client.subscribe("flespi/message/gw/channels/" + channel.id + "/+", { qos: 1 }, (error: Error) => {
+                if (error) {
+                    client.end(true); // force disconnect if error
                 }
-                console.log(`Subscribed ${channel.id}`);
             });
         });
     });
 
-    // emits new coordinates whenever the subscription receives new data
+    // emits data from Flespi whenever the subscription receives it
     client.on("message", (_topic: string, msg: Buffer) => {
         const data = JSON.parse(msg.toString("utf-8"));
         eventBus.$emit("newCoordinates", {

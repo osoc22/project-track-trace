@@ -1,3 +1,6 @@
+/**
+ * This is the data the client device will send to Flespi
+ */
 declare type LocationData = {
     ident: string,
     timestamp: number,

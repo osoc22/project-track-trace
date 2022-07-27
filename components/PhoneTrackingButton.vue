@@ -23,7 +23,7 @@ export default defineComponent({
   data () {
     return {
       tracking: false,
-      watcherId: -1
+      watcherId: -1 // the Id of the current location watcher, to be able to stop tracking
     };
   },
   beforeDestroy () {
@@ -32,31 +32,35 @@ export default defineComponent({
   },
   methods: {
     startTracking () {
-      this.watcherId = navigator.geolocation.watchPosition((result) => {
-        if (!this.tracking) {
-          this.$bvToast.toast("You are being tracked.", {
-            title: "Paradar message",
-            autoHideDelay: 3000,
-            variant: "danger",
-            solid: true,
-            toaster: "b-toaster-top-center"
-          });
-          this.tracking = true;
-        }
-        this.$handleUpdatedPosition(this.client, result);
-      });
+        // this function gets called every time the device gets a new position
+        this.watcherId = navigator.geolocation.watchPosition((result) => {
+          if (!this.tracking) {
+            // it this is the first message you are sending, you get notified
+            this.$bvToast.toast("You are being tracked.", {
+              title: "Paradar message",
+              autoHideDelay: 3000,
+              variant: "danger",
+              solid: true,
+              toaster: "b-toaster-top-center"
+            });
+            this.tracking = true;
+          }
+          // Send location data to Flespi
+          this.$handleUpdatedPosition(this.client, result);
+        });
     },
     stopTracking () {
-      this.tracking = false;
-      navigator.geolocation.clearWatch(this.watcherId);
-      this.watcherId = -1;
-      this.$bvToast.toast("You are not being tracked anymore.", {
-        title: "Paradar message",
-        autoHideDelay: 3000,
-        variant: "success",
-        solid: true,
-        toaster: "b-toaster-top-center"
-      });
+        this.tracking = false;
+        navigator.geolocation.clearWatch(this.watcherId); // remove the watch function
+        this.watcherId = -1;
+        // notifies the user
+        this.$bvToast.toast("You are not being tracked anymore.", {
+            title: "Paradar message",
+            autoHideDelay: 3000,
+            variant: "success",
+            solid: true,
+            toaster: "b-toaster-top-center"
+        });
     }
   }
 });
