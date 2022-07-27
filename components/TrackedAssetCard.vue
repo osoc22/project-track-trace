@@ -20,21 +20,21 @@ export default defineComponent({
   props: {
     position: {
       type: Object as PropType<Position>,
-      required: true,
+      required: true
     },
     // eslint-disable-next-line vue/require-default-prop
     device: {
-      type: Object as PropType<Device>,
-    },
+      type: Object as PropType<Device>
+    }
   },
   methods: {
-    centerMap(position: Position): void {
+    centerMap (position: Position): void {
       eventBus.$emit("centerMapOnTrackedAsset", [
         position.longitude,
-        position.latitude,
+        position.latitude
       ]);
-    },
-  },
+    }
+  }
 });
 </script>
 

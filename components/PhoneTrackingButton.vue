@@ -18,20 +18,20 @@ export default defineComponent({
     client: {
       type: MqttClient,
       required: true,
-    },
-  },
-  data() {
+    }
+  }
+  data () {
     return {
       tracking: false,
-      watcherId: -1,
+      watcherId: -1
     };
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.stopTracking();
     this.client.end(true);
   },
   methods: {
-    startTracking() {
+    startTracking () {
       this.watcherId = navigator.geolocation.watchPosition((result) => {
         if (!this.tracking) {
           this.$bvToast.toast("You are being tracked.", {
@@ -39,14 +39,14 @@ export default defineComponent({
             autoHideDelay: 200000,
             variant: "danger",
             solid: true,
-            toaster: "b-toaster-top-center",
+            toaster: "b-toaster-top-center"
           });
           this.tracking = true;
         }
         this.$handleUpdatedPosition(this.client, result);
       });
     },
-    stopTracking() {
+    stopTracking () {
       this.tracking = false;
       navigator.geolocation.clearWatch(this.watcherId);
       this.watcherId = -1;
@@ -55,10 +55,10 @@ export default defineComponent({
         autoHideDelay: 3000,
         variant: "success",
         solid: true,
-        toaster: "b-toaster-top-center",
+        toaster: "b-toaster-top-center"
       });
-    },
-  },
+    }
+  }
 });
 </script>
 

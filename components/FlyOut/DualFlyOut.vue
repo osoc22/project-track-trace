@@ -6,47 +6,47 @@ export default defineComponent({
   props: {
     primaryVisibility: {
       type: Boolean,
-      default: false,
+      default: false
     },
     secondaryVisibility: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ["primaryChange", "secondaryChange"],
-  data() {
+  data () {
     return {
       primaryOpen: this.primaryVisibility,
       secondaryOpen: this.secondaryVisibility,
-      windowWidth: 0,
+      windowWidth: 0
     };
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener("resize", this.onResize);
   },
-  mounted() {
+  mounted () {
     this.windowWidth = window.innerWidth;
     window.addEventListener("resize", this.onResize);
   },
   methods: {
-    handlePrimaryPanel(opened: boolean) {
+    handlePrimaryPanel (opened: boolean) {
       if (this.secondaryOpen && opened && this.windowWidth < 992) {
         this.secondaryOpen = false;
       }
       this.primaryOpen = opened;
       this.$emit("primaryChange", opened);
     },
-    handleSecondaryPanel(opened: boolean) {
+    handleSecondaryPanel (opened: boolean) {
       if (this.primaryOpen && opened && this.windowWidth < 992) {
         this.primaryOpen = false;
       }
       this.secondaryOpen = opened;
       this.$emit("secondaryChange", opened);
     },
-    onResize() {
+    onResize () {
       this.windowWidth = window.innerWidth;
-    },
-  },
+    }
+  }
 });
 </script>
 <template>
