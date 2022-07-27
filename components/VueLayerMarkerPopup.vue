@@ -71,6 +71,8 @@ export default defineComponent({
           if (this.details.ID === data.id) {
             // We update the position
             this.position = [data.longitude, data.latitude];
+            // centers map on currently selected marker whenever its location is updated
+            eventBus.$emit("centerMapOnTrackedAsset", this.position);
             // update popup details when the attached asset has sent an update
             this.details = this.parseDetails(data);
           }
