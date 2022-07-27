@@ -28,7 +28,7 @@ import { eventBus } from "~/plugins/utils";
 
 interface Properties {
   device?: Device, // If the name is unknown to Flespi, device will be undefined
-  position: Position
+  details: Position
 }
 
 export default defineComponent({
@@ -88,7 +88,7 @@ export default defineComponent({
          * We blame this behaviour on VueLayers being quirky.
          */
         const featureProps: Properties = e.feature.getProperties();
-        const position = featureProps.position;
+        const positionInfo = featureProps.details;
         const device = featureProps.device;
         /*
          * set the selectIcon - slower than the onselect triggering, so we see the 'wrong' icon for a 0.5s (+-until zoomed in)
