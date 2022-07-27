@@ -19,7 +19,7 @@ export default defineComponent({
       type: MqttClient,
       required: true,
     }
-  }
+  },
   data () {
     return {
       tracking: false,
