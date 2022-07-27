@@ -24,8 +24,8 @@
         <vue-layer-marker
           v-for="position in positions"
           :key="position.id"
-          :position="position"
           :coordinates="[position.longitude, position.latitude]"
+          :details="position"
           :src="position.id.includes('sp_') ? '/phone.png' : '/marker.png'"
           :select-src="position.id.includes('sp_') ? '/phone-selected.png' : '/marker-selected.png'"
           :scale="0.15"
@@ -83,7 +83,8 @@ export default Vue.extend({
     setInterval(() => {
       this.positions.forEach((position, index) => {
         if (Math.abs(position.timestamp - Date.now() / 1000) >= 60) {
-          this.positions.splice(index, 1);
+          const removedElement = this.positions.splice(index, 1)[0];
+          eventBus.$emit("removedMarker", (removedElement.id));
         }
       });
     }, 60000);

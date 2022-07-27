@@ -1,21 +1,38 @@
 # Paradar
+<div align="center">
+  <img src="https://osoc.be/editions/2022/projects/paradar.svg" width="250px" />
+</div>
+Paradar is a Proof-of-Concept tracking app that allows NCCN to track useful resources (VIP, assets, ...) in their internal tools (crisis management, emergency planning, ...) by using physical IoT Trackers and smartphones.
 
 ## Get Started & Live
+In order to get started with Paradar, you'll need 2 dependencies:
+- [Node 16.16.0 or higher](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
 
+After having the 2 depdencies installed, clone the project to your working machine...
 ```bash
-# install dependencies
-$ yarn install
-
-# serve with hot reload at localhost:3000
-$ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
+$ git clone git@github.com:osoc22/project-track-trace.git
 ```
+... install the dependencies...
+```bash
+$ yarn install
+```
+... enter the correct `env` variables...
+```bash
+$ touch .env
+$ FLESPI_KEY=XXXX > .env
+```
+... and run the project to start contributing!
+```bash
+$ yarn dev
+```
+## Available commands
+|Command|Usage|
+|---|---|
+|`yarn install`|Installs the dependencies as listed in `package.json` and matches the versions to the `yarn.lock`|
+|`yarn dev`|Starts a hot-reloading development server on [`localhost:3000`](http://localhost:3000) *(Or another random port if 3000 is not available)*|
+|`yarn generate`|Generates a production-ready static version of the app for static deployment|
+|`yarn start`|Runs the production-version locally (:exclamation: Requires you to run `yarn generate` beforehand)|
 
 ## `.env`
 | Key              | Explanation                                                         | Example         |

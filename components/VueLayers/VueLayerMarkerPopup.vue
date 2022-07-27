@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { eventBus } from "~/plugins/utils";
 
 export default defineComponent({
     name: "VueLayerMarkerPopup",
@@ -49,12 +50,11 @@ export default defineComponent({
         };
     },
     mounted () {
-        // Display popup on global event
-        this.$root.$on("popup-toggled", (coordinates : Array<number>, details : Object, alarmEvent: boolean, name?: string) => {
+        this.$root.$on("popup-toggled", (positionInfo: Position, name?: string) => {
             this.display = true;
-            this.position = coordinates;
-            this.details = details;
-            this.attention = alarmEvent;
+            this.position = [positionInfo.longitude, positionInfo.latitude];
+            this.details = this.parseDetails(positionInfo);
+            this.attention = !!positionInfo.alarmEvent;
             this.name = name;
       });
       // Hide popup on global event
@@ -62,6 +62,47 @@ export default defineComponent({
         this.display = false;
         this.position = [0, 0];
       });
+      /**
+       * when any coordinates are updated, we check if the updated data is linked to the current popup.
+       * If it is, and we're displaying the popup, we also need to update its location.
+       */
+      eventBus.$on("newCoordinates", (data: Position) => {
+        if (this.details && this.display) {
+          // if the data ID is the same as the current popup ID
+          if (this.details.ID === data.id) {
+            // We update the position
+            this.position = [data.longitude, data.latitude];
+            // centers map on currently selected marker whenever its location is updated
+            eventBus.$emit("centerMapOnTrackedAsset", this.position);
+            // update popup details when the attached asset has sent an update
+            this.details = this.parseDetails(data);
+          }
+        }
+      });
+      eventBus.$on("removedMarker", (elementID : string) => {
+        if (this.display && this.details.ID === elementID) {
+          this.display = false;
+        }
+      });
+    },
+    methods: {
+      toggleDetails () {},
+      parseDetails (data : Position) {
+        // convert timestamp to readable format
+        const timestamp : Date = new Date(data.timestamp * 1000);
+        const tsString : string = timestamp.toLocaleString();
+        const details = Object.fromEntries(Object.entries({
+              ID: data.id,
+              Longitude: data.longitude,
+              Latitude: data.latitude,
+              "Battery Level": data.batteryLevel,
+              "Last Received Data": tsString
+            }).filter(([_key, value]) => value));
+            if (data.movementStatus) {
+              details.Moving = undefined;
+            }
+            return details;
+      }
     }
     /**
      * Placeholder to toggle details on the right side of the window
