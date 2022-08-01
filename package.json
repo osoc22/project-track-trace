@@ -18,7 +18,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
-    "core-js": "^3.24.0",
+    "core-js": "^3.24.1",
     "mqtt": "^4.3.7",
     "nuxt": "^2.15.8",
     "vue": "^2.7.5",
