@@ -10039,10 +10039,10 @@ vue@^2.6.12, vue@^2.7.5:
     "@vue/compiler-sfc" "2.7.7"
     csstype "^3.1.0"
 
-vuelayers@^0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/vuelayers/-/vuelayers-0.12.3.tgz#4da30a522b71f90e7e277d9842caf9a92a2c2681"
-  integrity sha512-wYFnOk9ovOe+s0O8JOs5VR0zjg7UlCsFvFz1D7zoPf0rSMrhATZXplTaeiG2pw0xaxpjRBTfYC8VEz73Gs4bWQ==
+vuelayers@^0.12.4:
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/vuelayers/-/vuelayers-0.12.4.tgz#84cc0f432d4ddc254a1b5d0abba2dcb56bd1ee70"
+  integrity sha512-E2B53KupKdQH/IN/+vMnTHoXEEN/+owEN8jGBVbdF/gPT6I0GZcFFxu8yVLPopVng1XmOBzt8xiKb7aPtnSROQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@turf/point-on-feature" "^5.1.5"
