@@ -24,7 +24,7 @@
     "vue": "^2.7.5",
     "vue-server-renderer": "^2.7.5",
     "vue-template-compiler": "^2.7.5",
-    "vuelayers": "^0.12.3",
+    "vuelayers": "^0.12.5",
     "webpack": "^4.46.0"
   },
   "devDependencies": {
