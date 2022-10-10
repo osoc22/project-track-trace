@@ -10039,10 +10039,10 @@ vue@^2.6.12, vue@^2.7.5:
     "@vue/compiler-sfc" "2.7.7"
     csstype "^3.1.0"
 
-vuelayers@^0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/vuelayers/-/vuelayers-0.12.3.tgz#4da30a522b71f90e7e277d9842caf9a92a2c2681"
-  integrity sha512-wYFnOk9ovOe+s0O8JOs5VR0zjg7UlCsFvFz1D7zoPf0rSMrhATZXplTaeiG2pw0xaxpjRBTfYC8VEz73Gs4bWQ==
+vuelayers@^0.12.6:
+  version "0.12.6"
+  resolved "https://registry.yarnpkg.com/vuelayers/-/vuelayers-0.12.6.tgz#d9fad866f86e8b0f9783b5812546d7c01f7a39fd"
+  integrity sha512-mhog0D2Vsd+xAXDY3YPMpF8eG87LH7IaK10kF6+KAHOk2F+/Sge9fJ24jfZZFTLp38c0JmthvlUd2giIJ4TGaA==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@turf/point-on-feature" "^5.1.5"
@@ -10054,12 +10054,6 @@ vuelayers@^0.12.3:
     parse-color "^1.0.0"
     rxjs "^6.6.3"
     uuid "^8.3.1"
-    vuequery "^2.1.1"
-
-vuequery@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/vuequery/-/vuequery-2.1.1.tgz#5ff82ebecaf143a77a705637612f499977d06b4a"
-  integrity sha512-5RCU9qZ07oKrBivucM1gnn2evsNYzRxYiglJaMdnOjL3kGrKS1ptAmOS7jZQp7KW9oNHpbG8shT8rzjaKsZ0pQ==
 
 vuex@^3.6.2:
   version "3.6.2"
